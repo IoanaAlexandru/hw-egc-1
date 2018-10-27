@@ -8,4 +8,3 @@ public:
 	Brick(std::string name, glm::vec3 leftBottomCorner, float height, float width, glm::vec3 color, bool fill);
 	~Brick();
 };
-

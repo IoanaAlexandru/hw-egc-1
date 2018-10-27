@@ -4,6 +4,7 @@
 #include <string>
 #include <Core/Engine.h>
 #include "Brick.h"
+#include "Wall.h"
 
 class Scene : public SimpleScene
 {
@@ -37,4 +38,5 @@ class Scene : public SimpleScene
 			BRICKS_PER_ROW,
 			BRICK_ROWS;
 		std::vector<Brick*> bricks;
+		std::vector<Wall*> walls;
 };
