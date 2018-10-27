@@ -19,6 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\Source\Brick Breaker\Generic\Circle.cpp" />
+    <ClCompile Include="..\Source\Brick Breaker\Generic\Rectangle.cpp" />
     <ClCompile Include="..\Source\Brick Breaker\Scene\Ball.cpp" />
     <ClCompile Include="..\Source\Brick Breaker\Scene\Brick.cpp" />
     <ClCompile Include="..\Source\Brick Breaker\Scene\Platform.cpp" />
@@ -41,7 +43,9 @@
     <ClCompile Include="..\Source\Main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Source\Brick Breaker\Animations\Transform2D.h" />
+    <ClInclude Include="..\Source\Brick Breaker\Generic\Circle.h" />
+    <ClInclude Include="..\Source\Brick Breaker\Generic\Rectangle.h" />
+    <ClInclude Include="..\Source\Brick Breaker\Generic\Transform2D.h" />
     <ClInclude Include="..\Source\Brick Breaker\Scene\Ball.h" />
     <ClInclude Include="..\Source\Brick Breaker\Scene\Brick.h" />
     <ClInclude Include="..\Source\Brick Breaker\Scene\Platform.h" />

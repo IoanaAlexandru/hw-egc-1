@@ -4,7 +4,7 @@
 #include <iostream>
 
 #include <Core/Engine.h>
-#include "Brick Breaker/Animations/Transform2D.h"
+#include "Brick Breaker/Generic/Transform2D.h"
 
 using namespace std;
 
@@ -77,14 +77,14 @@ void Scene::Init()
 	// CREATE PLATFORM
 	float platform_width = resolution.x * PLATFORM_WIDTH_RATIO,
 		platform_height = platform_width * PLATFORM_HEIGHT_TO_WIDTH_RATIO;
-	glm::vec3 platform_corner = glm::vec3((resolution.x - platform_width) / 2, wall_thickness, 0);
+	glm::vec3 platform_corner = glm::vec3((resolution.x - platform_width) / 2, wall_thickness + platform_height, 0);
 	glm::vec3 platform_color = glm::vec3(0.9, 0.4, 0.4);
 
 	platform = new Platform("platform", platform_corner, platform_height, platform_width, platform_color, fill);
 
 	// CREATE BALL
 	float ball_radius = platform_width * BALL_TO_PLATFORM_RATIO / 2;
-	glm::vec3 ball_center = platform_corner + glm::vec3(platform_width / 2, platform_height + ball_radius, 0);
+	glm::vec3 ball_center = platform_corner + glm::vec3(platform_width / 2, ball_radius, 0);
 	glm::vec3 ball_color = glm::vec3(1, 1, 1);
 	
 	balls.push_back(new Ball("ball-0", ball_center, ball_radius, ball_color));

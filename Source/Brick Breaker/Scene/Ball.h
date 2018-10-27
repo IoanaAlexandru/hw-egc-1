@@ -1,7 +1,7 @@
 #pragma once
-#include "Core/GPU/Mesh.h"
+#include "Brick Breaker/Generic/Circle.h"
 class Ball :
-	public Mesh
+	public Circle
 {
 public:
 	// Create circle (ball) with given center, radius and color

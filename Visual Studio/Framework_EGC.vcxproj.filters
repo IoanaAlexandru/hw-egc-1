@@ -25,7 +25,7 @@
     <Filter Include="Brick Breaker\Scene">
       <UniqueIdentifier>{1a33abde-d70a-4802-9d64-5f148c637804}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Brick Breaker\Animations">
+    <Filter Include="Brick Breaker\Generic">
       <UniqueIdentifier>{90d7a238-a727-4e0b-a43d-86c62362c9b1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -87,6 +87,12 @@
     </ClCompile>
     <ClCompile Include="..\Source\Brick Breaker\Scene\Ball.cpp">
       <Filter>Brick Breaker\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Brick Breaker\Generic\Circle.cpp">
+      <Filter>Brick Breaker\Generic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Brick Breaker\Generic\Rectangle.cpp">
+      <Filter>Brick Breaker\Generic</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -150,9 +156,6 @@
     <ClInclude Include="..\Source\Brick Breaker\Scene\Brick.h">
       <Filter>Brick Breaker\Scene</Filter>
     </ClInclude>
-    <ClInclude Include="..\Source\Brick Breaker\Animations\Transform2D.h">
-      <Filter>Brick Breaker\Animations</Filter>
-    </ClInclude>
     <ClInclude Include="..\Source\Brick Breaker\Scene\Wall.h">
       <Filter>Brick Breaker\Scene</Filter>
     </ClInclude>
@@ -161,6 +164,15 @@
     </ClInclude>
     <ClInclude Include="..\Source\Brick Breaker\Scene\Ball.h">
       <Filter>Brick Breaker\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Brick Breaker\Generic\Transform2D.h">
+      <Filter>Brick Breaker\Generic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Brick Breaker\Generic\Circle.h">
+      <Filter>Brick Breaker\Generic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Brick Breaker\Generic\Rectangle.h">
+      <Filter>Brick Breaker\Generic</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

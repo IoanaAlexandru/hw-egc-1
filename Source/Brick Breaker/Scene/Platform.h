@@ -1,7 +1,7 @@
 #pragma once
-#include "Core/GPU/Mesh.h"
+#include "Brick Breaker/Generic/Rectangle.h"
 class Platform :
-	public Mesh
+	public Rectangle
 {
 public:
 	// Create rectangle (platform) with given bottom left corner, size and color
