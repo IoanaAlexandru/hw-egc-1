@@ -6,6 +6,7 @@
 #include "Brick.h"
 #include "Wall.h"
 #include "Platform.h"
+#include "Ball.h"
 
 class Scene : public SimpleScene
 {
@@ -36,11 +37,13 @@ class Scene : public SimpleScene
 			PLATFORM_WIDTH_RATIO,            // percentage of scene width representing the platform width
 			PLATFORM_HEIGHT_TO_WIDTH_RATIO,  // percentage of platform width representing the height
 			WALL_THICKNESS_RATIO,            // percentage of the smallest scene dimension reserved for the wall
-			BRICK_DISTANCE_RATIO;            // percentage of brick panel reserved for the space between bricks
+			BRICK_DISTANCE_RATIO,            // percentage of brick panel reserved for the space between bricks
+			BALL_TO_PLATFORM_RATIO;          // percentage of the platform ratio representing the ball diameter
 		static const int
 			BRICKS_PER_ROW,
 			BRICK_ROWS;
 		std::vector<Brick*> bricks;
 		std::vector<Wall*> walls;
 		Platform *platform;
+		std::vector<Ball*> balls;
 };

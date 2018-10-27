@@ -13,7 +13,8 @@ Scene::BRICK_PANEL_HEIGHT_RATIO = 0.5,
 Scene::PLATFORM_WIDTH_RATIO = 0.15,
 Scene::PLATFORM_HEIGHT_TO_WIDTH_RATIO = 0.1,
 Scene::WALL_THICKNESS_RATIO = 0.01,
-Scene::BRICK_DISTANCE_RATIO = 0.1;
+Scene::BRICK_DISTANCE_RATIO = 0.1,
+Scene::BALL_TO_PLATFORM_RATIO = 0.15;
 const int Scene::BRICKS_PER_ROW = 15,
 Scene::BRICK_ROWS = 8;
 
@@ -58,7 +59,7 @@ void Scene::Init()
 	float y_offset = resolution.y - (wall_thickness + brick_height);
 
 	// Top left corner of first brick at the top left of the brick panel
-	glm::vec3 corner = glm::vec3(x_offset, y_offset, 0);
+	glm::vec3 brick_corner = glm::vec3(x_offset, y_offset, 0);
 
 	glm::vec3 brick_color = glm::vec3(0.7, 0.2, 0.2);
 	bool fill = true;
@@ -66,20 +67,27 @@ void Scene::Init()
 	for (auto i = 0; i < BRICK_ROWS; i++) {
 		for (auto j = 0; j < BRICKS_PER_ROW; j++) {
 			std::string name = "brick-" + to_string(i) + "-" + to_string(j);
-			bricks.push_back(new Brick(name, corner, brick_height, brick_width, brick_color, fill));
-			corner += glm::vec3(brick_width + brick_distance_x, 0, 0);
+			bricks.push_back(new Brick(name, brick_corner, brick_height, brick_width, brick_color, fill));
+			brick_corner += glm::vec3(brick_width + brick_distance_x, 0, 0);
 		}
-		corner -= glm::vec3(0, brick_height + brick_distance_y, 0);
-		corner.x = x_offset;
+		brick_corner -= glm::vec3(0, brick_height + brick_distance_y, 0);
+		brick_corner.x = x_offset;
 	}
 
 	// CREATE PLATFORM
 	float platform_width = resolution.x * PLATFORM_WIDTH_RATIO,
 		platform_height = platform_width * PLATFORM_HEIGHT_TO_WIDTH_RATIO;
-	corner = glm::vec3((resolution.x - platform_width) / 2, wall_thickness, 0);
+	glm::vec3 platform_corner = glm::vec3((resolution.x - platform_width) / 2, wall_thickness, 0);
 	glm::vec3 platform_color = glm::vec3(0.9, 0.4, 0.4);
 
-	platform = new Platform("platform", corner, platform_height, platform_width, platform_color, fill);
+	platform = new Platform("platform", platform_corner, platform_height, platform_width, platform_color, fill);
+
+	// CREATE BALL
+	float ball_radius = platform_width * BALL_TO_PLATFORM_RATIO / 2;
+	glm::vec3 ball_center = platform_corner + glm::vec3(platform_width / 2, platform_height + ball_radius, 0);
+	glm::vec3 ball_color = glm::vec3(1, 1, 1);
+	
+	balls.push_back(new Ball("ball-0", ball_center, ball_radius, ball_color));
 }
 
 void Scene::FrameStart()
@@ -102,6 +110,9 @@ void Scene::Update(float deltaTimeSeconds)
 		RenderMesh2D(wall, shaders["VertexColor"], glm::mat3(1));
 	}
 	RenderMesh2D(platform, shaders["VertexColor"], glm::mat3(1));
+	for (auto ball : balls) {
+		RenderMesh2D(ball, shaders["VertexColor"], glm::mat3(1));
+	}
 }
 
 void Scene::FrameEnd()
