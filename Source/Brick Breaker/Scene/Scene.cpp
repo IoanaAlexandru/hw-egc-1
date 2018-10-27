@@ -36,27 +36,30 @@ void Scene::Init()
 	camera->Update();
 	GetCameraInput()->SetActive(false);
 
+	scene_width = resolution.x;
+	scene_height = resolution.y;
+
 	// CREATE WALLS
-	float wall_thickness = min(resolution.x, resolution.y) * WALL_THICKNESS_RATIO;
+	wall_thickness = min(scene_width, scene_height) * WALL_THICKNESS_RATIO;
 	glm::vec3 wall_color = glm::vec3(0.7, 0.2, 0.2);
 
-	walls.push_back(new Wall("wall-up", UP, resolution.y, resolution.x, wall_thickness, wall_color));
-	walls.push_back(new Wall("wall-left", LEFT, resolution.y, resolution.x, wall_thickness, wall_color));
-	walls.push_back(new Wall("wall-right", RIGHT, resolution.y, resolution.x, wall_thickness, wall_color));
+	walls.push_back(new Wall("wall-up", UP, scene_height, scene_width, wall_thickness, wall_color));
+	walls.push_back(new Wall("wall-left", LEFT, scene_height, scene_width, wall_thickness, wall_color));
+	walls.push_back(new Wall("wall-right", RIGHT, scene_height, scene_width, wall_thickness, wall_color));
 
 	// CREATE BRICKS
-	float brick_width = resolution.x * BRICK_PANEL_WIDTH_RATIO / BRICKS_PER_ROW * (1 - BRICK_DISTANCE_RATIO);
-	float brick_height = resolution.y * BRICK_PANEL_HEIGHT_RATIO / BRICK_ROWS * (1 - BRICK_DISTANCE_RATIO);
+	float brick_width = scene_width * BRICK_PANEL_WIDTH_RATIO / BRICKS_PER_ROW * (1 - BRICK_DISTANCE_RATIO);
+	float brick_height = scene_height * BRICK_PANEL_HEIGHT_RATIO / BRICK_ROWS * (1 - BRICK_DISTANCE_RATIO);
 
 	// Horizontal distance between bricks
-	float brick_distance_x = (resolution.x * BRICK_PANEL_WIDTH_RATIO - BRICKS_PER_ROW * brick_width) / (BRICKS_PER_ROW - 1);
+	float brick_distance_x = (scene_width * BRICK_PANEL_WIDTH_RATIO - BRICKS_PER_ROW * brick_width) / (BRICKS_PER_ROW - 1);
 	// Vertical distance between bricks
-	float brick_distance_y = (resolution.y * BRICK_PANEL_HEIGHT_RATIO - BRICK_ROWS * brick_height) / (BRICK_ROWS - 1);
+	float brick_distance_y = (scene_height * BRICK_PANEL_HEIGHT_RATIO - BRICK_ROWS * brick_height) / (BRICK_ROWS - 1);
 
 	// There is a row of free space between the brick panel and the upper wall, of height equal to the brick height
-	float x_offset = resolution.x * (1 - BRICK_PANEL_WIDTH_RATIO) / 2;
+	float x_offset = scene_width * (1 - BRICK_PANEL_WIDTH_RATIO) / 2;
 	// The brick panel is centered
-	float y_offset = resolution.y - (wall_thickness + brick_height);
+	float y_offset = scene_height - (wall_thickness + brick_height);
 
 	// Top left corner of first brick at the top left of the brick panel
 	glm::vec3 brick_corner = glm::vec3(x_offset, y_offset, 0);
@@ -75,9 +78,9 @@ void Scene::Init()
 	}
 
 	// CREATE PLATFORM
-	float platform_width = resolution.x * PLATFORM_WIDTH_RATIO,
-		platform_height = platform_width * PLATFORM_HEIGHT_TO_WIDTH_RATIO;
-	glm::vec3 platform_corner = glm::vec3((resolution.x - platform_width) / 2, wall_thickness + platform_height, 0);
+	platform_width = scene_width * PLATFORM_WIDTH_RATIO;
+	float platform_height = platform_width * PLATFORM_HEIGHT_TO_WIDTH_RATIO;
+	glm::vec3 platform_corner = glm::vec3((scene_width - platform_width) / 2, wall_thickness + platform_height, 0);
 	glm::vec3 platform_color = glm::vec3(0.9, 0.4, 0.4);
 
 	platform = new Platform("platform", platform_corner, platform_height, platform_width, platform_color, fill);
@@ -104,14 +107,20 @@ void Scene::FrameStart()
 void Scene::Update(float deltaTimeSeconds)
 {
 	for (auto brick : bricks) {
-		RenderMesh2D(brick, shaders["VertexColor"], glm::mat3(1));
+		brick->Update(deltaTimeSeconds);
+		RenderMesh2D(brick, shaders["VertexColor"], brick->GetModelMatrix());
 	}
+
 	for (auto wall : walls) {
 		RenderMesh2D(wall, shaders["VertexColor"], glm::mat3(1));
 	}
-	RenderMesh2D(platform, shaders["VertexColor"], glm::mat3(1));
+
+	platform->Update(deltaTimeSeconds);
+	RenderMesh2D(platform, shaders["VertexColor"], platform->GetModelMatrix());
+
 	for (auto ball : balls) {
-		RenderMesh2D(ball, shaders["VertexColor"], glm::mat3(1));
+		ball->Update(deltaTimeSeconds);
+		RenderMesh2D(ball, shaders["VertexColor"], ball->GetModelMatrix());
 	}
 }
 
@@ -137,12 +146,21 @@ void Scene::OnKeyRelease(int key, int mods)
 
 void Scene::OnMouseMove(int mouseX, int mouseY, int deltaX, int deltaY)
 {
-	// add mouse move event
+	float new_pos = mouseX;
+	new_pos = max(platform_width / 2 + wall_thickness, new_pos);  // left limit
+	new_pos = min(scene_width - platform_width / 2 - wall_thickness, new_pos);  // right limit
+	new_pos -= scene_width / 2;  // take into account original position of platform
+
+	platform->Move(new_pos);
+	for (auto ball : balls)
+		ball->Move(new_pos);
 }
 
 void Scene::OnMouseBtnPress(int mouseX, int mouseY, int button, int mods)
 {
-	// add mouse button press event
+	for (auto ball : balls) {
+		ball->StartMoving();
+	}
 }
 
 void Scene::OnMouseBtnRelease(int mouseX, int mouseY, int button, int mods)

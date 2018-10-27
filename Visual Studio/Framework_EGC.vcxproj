@@ -43,6 +43,7 @@
     <ClCompile Include="..\Source\Main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Source\Brick Breaker\Generic\AnimatedMesh.h" />
     <ClInclude Include="..\Source\Brick Breaker\Generic\Circle.h" />
     <ClInclude Include="..\Source\Brick Breaker\Generic\Rectangle.h" />
     <ClInclude Include="..\Source\Brick Breaker\Generic\Transform2D.h" />

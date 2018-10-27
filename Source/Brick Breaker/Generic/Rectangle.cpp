@@ -3,8 +3,13 @@
 #include <Core/Engine.h>
 
 Rectangle::Rectangle(std::string name, glm::vec3 topLeftCorner, float height, float width, glm::vec3 color, bool fill)
-	: Mesh(name)
+	: AnimatedMesh(name)
 {
+	height_ = height;
+	width_ = width;
+	color_ = color;
+	fill_ = fill;
+
 	glm::vec3 corner = topLeftCorner;
 
 	std::vector<VertexFormat> vertices =

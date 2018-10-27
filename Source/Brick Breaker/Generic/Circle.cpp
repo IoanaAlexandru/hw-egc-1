@@ -1,8 +1,11 @@
 #include "Circle.h"
 
 Circle::Circle(std::string name, glm::vec3 center, float radius, glm::vec3 color)
-	: Mesh(name)
+	: AnimatedMesh(name)
 {
+	radius_ = radius;
+	color_ = color;
+
 	float theta = 0;
 	float x, y;
 
@@ -12,8 +15,8 @@ Circle::Circle(std::string name, glm::vec3 center, float radius, glm::vec3 color
 	vertices.push_back(VertexFormat(center, color));
 
 	while (theta <= 6.5) {
-		x = radius * cos(theta);
-		y = radius * sin(theta);
+		x = radius_ * cos(theta);
+		y = radius_ * sin(theta);
 		vertices.push_back(VertexFormat(glm::vec3(x, y, 0) + center, color));
 		theta += 0.1;
 	}

@@ -9,3 +9,7 @@ Brick::Brick(std::string name, glm::vec3 topLeftCorner, float height, float widt
 Brick::~Brick()
 {
 }
+
+void Brick::Update(float delta_time_seconds) {
+	model_matrix_ = glm::mat3(1);
+}

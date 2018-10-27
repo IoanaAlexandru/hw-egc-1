@@ -42,8 +42,14 @@ class Scene : public SimpleScene
 		static const int
 			BRICKS_PER_ROW,
 			BRICK_ROWS;
+
 		std::vector<Brick*> bricks;
 		std::vector<Wall*> walls;
 		Platform *platform;
 		std::vector<Ball*> balls;
+
+		float scene_width,
+			scene_height,
+			platform_width,
+			wall_thickness;
 };
