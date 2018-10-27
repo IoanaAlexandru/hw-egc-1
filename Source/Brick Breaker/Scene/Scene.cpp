@@ -9,11 +9,13 @@
 using namespace std;
 
 const float Scene::BRICK_PANEL_WIDTH_RATIO = 0.75,
-            Scene::BRICK_PANEL_HEIGHT_RATIO = 0.5,
-            Scene::WALL_THICKNESS_RATIO = 0.01,
-            Scene::BRICK_DISTANCE_RATIO = 0.1;
+Scene::BRICK_PANEL_HEIGHT_RATIO = 0.5,
+Scene::PLATFORM_WIDTH_RATIO = 0.15,
+Scene::PLATFORM_HEIGHT_TO_WIDTH_RATIO = 0.1,
+Scene::WALL_THICKNESS_RATIO = 0.01,
+Scene::BRICK_DISTANCE_RATIO = 0.1;
 const int Scene::BRICKS_PER_ROW = 15,
-          Scene::BRICK_ROWS = 8;
+Scene::BRICK_ROWS = 8;
 
 Scene::Scene()
 {
@@ -35,7 +37,7 @@ void Scene::Init()
 
 	// CREATE WALLS
 	float wall_thickness = min(resolution.x, resolution.y) * WALL_THICKNESS_RATIO;
-	glm::vec3 wall_color = glm::vec3(0.8, 0.3, 0.3);
+	glm::vec3 wall_color = glm::vec3(0.7, 0.2, 0.2);
 
 	walls.push_back(new Wall("wall-up", UP, resolution.y, resolution.x, wall_thickness, wall_color));
 	walls.push_back(new Wall("wall-left", LEFT, resolution.y, resolution.x, wall_thickness, wall_color));
@@ -58,7 +60,7 @@ void Scene::Init()
 	// Top left corner of first brick at the top left of the brick panel
 	glm::vec3 corner = glm::vec3(x_offset, y_offset, 0);
 
-	glm::vec3 brick_color = glm::vec3(0.8, 0.3, 0.3);
+	glm::vec3 brick_color = glm::vec3(0.7, 0.2, 0.2);
 	bool fill = true;
 
 	for (auto i = 0; i < BRICK_ROWS; i++) {
@@ -70,6 +72,14 @@ void Scene::Init()
 		corner -= glm::vec3(0, brick_height + brick_distance_y, 0);
 		corner.x = x_offset;
 	}
+
+	// CREATE PLATFORM
+	float platform_width = resolution.x * PLATFORM_WIDTH_RATIO,
+		platform_height = platform_width * PLATFORM_HEIGHT_TO_WIDTH_RATIO;
+	corner = glm::vec3((resolution.x - platform_width) / 2, wall_thickness, 0);
+	glm::vec3 platform_color = glm::vec3(0.9, 0.4, 0.4);
+
+	platform = new Platform("platform", corner, platform_height, platform_width, platform_color, fill);
 }
 
 void Scene::FrameStart()
@@ -91,6 +101,7 @@ void Scene::Update(float deltaTimeSeconds)
 	for (auto wall : walls) {
 		RenderMesh2D(wall, shaders["VertexColor"], glm::mat3(1));
 	}
+	RenderMesh2D(platform, shaders["VertexColor"], glm::mat3(1));
 }
 
 void Scene::FrameEnd()

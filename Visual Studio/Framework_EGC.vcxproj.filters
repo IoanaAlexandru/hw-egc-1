@@ -82,6 +82,9 @@
     <ClCompile Include="..\Source\Brick Breaker\Scene\Wall.cpp">
       <Filter>Brick Breaker\Scene</Filter>
     </ClCompile>
+    <ClCompile Include="..\Source\Brick Breaker\Scene\Platform.cpp">
+      <Filter>Brick Breaker\Scene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source\Core\World.h">
@@ -148,6 +151,9 @@
       <Filter>Brick Breaker\Animations</Filter>
     </ClInclude>
     <ClInclude Include="..\Source\Brick Breaker\Scene\Wall.h">
+      <Filter>Brick Breaker\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Brick Breaker\Scene\Platform.h">
       <Filter>Brick Breaker\Scene</Filter>
     </ClInclude>
   </ItemGroup>

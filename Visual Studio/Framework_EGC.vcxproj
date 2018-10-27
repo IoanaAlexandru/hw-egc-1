@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Source\Brick Breaker\Scene\Brick.cpp" />
+    <ClCompile Include="..\Source\Brick Breaker\Scene\Platform.cpp" />
     <ClCompile Include="..\Source\Brick Breaker\Scene\Scene.cpp" />
     <ClCompile Include="..\Source\Brick Breaker\Scene\Wall.cpp" />
     <ClCompile Include="..\Source\Component\CameraInput.cpp" />
@@ -41,6 +42,7 @@
   <ItemGroup>
     <ClInclude Include="..\Source\Brick Breaker\Animations\Transform2D.h" />
     <ClInclude Include="..\Source\Brick Breaker\Scene\Brick.h" />
+    <ClInclude Include="..\Source\Brick Breaker\Scene\Platform.h" />
     <ClInclude Include="..\Source\Brick Breaker\Scene\Scene.h" />
     <ClInclude Include="..\Source\Brick Breaker\Scene\Wall.h" />
     <ClInclude Include="..\Source\Component\CameraInput.h" />

@@ -5,6 +5,7 @@
 #include <Core/Engine.h>
 #include "Brick.h"
 #include "Wall.h"
+#include "Platform.h"
 
 class Scene : public SimpleScene
 {
@@ -30,13 +31,16 @@ class Scene : public SimpleScene
 
 	protected:
 		static const float
-			BRICK_PANEL_WIDTH_RATIO,  // percentage of window width reserved for brick panel
-			BRICK_PANEL_HEIGHT_RATIO,  // percentage of window height reserved for brick panel
-			WALL_THICKNESS_RATIO,     // percentage of the smallest window dimension reserved for the wall
-			BRICK_DISTANCE_RATIO;      // percentage of brick panel reserved for the space between bricks
+			BRICK_PANEL_WIDTH_RATIO,         // percentage of scene width reserved for brick panel
+			BRICK_PANEL_HEIGHT_RATIO,        // percentage of scene height reserved for brick panel
+			PLATFORM_WIDTH_RATIO,            // percentage of scene width representing the platform width
+			PLATFORM_HEIGHT_TO_WIDTH_RATIO,  // percentage of platform width representing the height
+			WALL_THICKNESS_RATIO,            // percentage of the smallest scene dimension reserved for the wall
+			BRICK_DISTANCE_RATIO;            // percentage of brick panel reserved for the space between bricks
 		static const int
 			BRICKS_PER_ROW,
 			BRICK_ROWS;
 		std::vector<Brick*> bricks;
 		std::vector<Wall*> walls;
+		Platform *platform;
 };
