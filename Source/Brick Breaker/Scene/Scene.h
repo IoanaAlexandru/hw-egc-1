@@ -1,23 +1,22 @@
 #pragma once
-#include <Component/SimpleScene.h>
-#include <Core/GPU/Mesh.h>
 
-class Laborator6 : public SimpleScene
+#include <Component/SimpleScene.h>
+#include <string>
+#include <Core/Engine.h>
+#include "Brick.h"
+
+class Scene : public SimpleScene
 {
 	public:
-		Laborator6();
-		~Laborator6();
+		Scene();
+		~Scene();
 
 		void Init() override;
-
-		Mesh * CreateMesh(const char * name, const std::vector<VertexFormat> &vertices, const std::vector<unsigned short> &indices);
 
 	private:
 		void FrameStart() override;
 		void Update(float deltaTimeSeconds) override;
 		void FrameEnd() override;
-
-		void RenderSimpleMesh(Mesh *mesh, Shader *shader, const glm::mat4 &modelMatrix);
 
 		void OnInputUpdate(float deltaTime, int mods) override;
 		void OnKeyPress(int key, int mods) override;
@@ -27,4 +26,15 @@ class Laborator6 : public SimpleScene
 		void OnMouseBtnRelease(int mouseX, int mouseY, int button, int mods) override;
 		void OnMouseScroll(int mouseX, int mouseY, int offsetX, int offsetY) override;
 		void OnWindowResize(int width, int height) override;
+
+	protected:
+		static const float
+			BRICK_PANEL_WIDTH_RATIO,  // percentage of window width reserved for brick panel
+			BRICK_PANEL_HEIGHT_RATIO,  // percentage of window height reserved for brick panel
+			WALL_THICKNESS_RATIO,     // percentage of the smallest window dimension reserved for the wall
+			BRICK_DISTANCE_RATIO;      // percentage of brick panel reserved for the space between bricks
+		static const int
+			BRICKS_PER_ROW,
+			BRICK_ROWS;
+		std::vector<Brick*> bricks;
 };

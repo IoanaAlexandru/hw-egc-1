@@ -19,6 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\Source\Brick Breaker\Scene\Brick.cpp" />
+    <ClCompile Include="..\Source\Brick Breaker\Scene\Scene.cpp" />
     <ClCompile Include="..\Source\Component\CameraInput.cpp" />
     <ClCompile Include="..\Source\Component\SceneInput.cpp" />
     <ClCompile Include="..\Source\Component\SimpleScene.cpp" />
@@ -33,20 +35,12 @@
     <ClCompile Include="..\Source\Core\Window\WindowObject.cpp" />
     <ClCompile Include="..\Source\Core\World.cpp" />
     <ClCompile Include="..\Source\include\gl.cpp" />
-    <ClCompile Include="..\Source\Laboratoare\Laborator1\Laborator1.cpp" />
-    <ClCompile Include="..\Source\Laboratoare\Laborator2\Laborator2.cpp" />
-    <ClCompile Include="..\Source\Laboratoare\Laborator3\Laborator3.cpp" />
-    <ClCompile Include="..\Source\Laboratoare\Laborator3\Laborator3_Vis2D.cpp" />
-    <ClCompile Include="..\Source\Laboratoare\Laborator3\Object2D.cpp" />
-    <ClCompile Include="..\Source\Laboratoare\Laborator4\Laborator4.cpp" />
-    <ClCompile Include="..\Source\Laboratoare\Laborator5\Laborator5.cpp" />
-    <ClCompile Include="..\Source\Laboratoare\Laborator6\Laborator6.cpp" />
-    <ClCompile Include="..\Source\Laboratoare\Laborator7\Laborator7.cpp" />
-    <ClCompile Include="..\Source\Laboratoare\Laborator8\Laborator8.cpp" />
-    <ClCompile Include="..\Source\Laboratoare\Laborator9\Laborator9.cpp" />
     <ClCompile Include="..\Source\Main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Source\Brick Breaker\Animations\Transform2D.h" />
+    <ClInclude Include="..\Source\Brick Breaker\Scene\Brick.h" />
+    <ClInclude Include="..\Source\Brick Breaker\Scene\Scene.h" />
     <ClInclude Include="..\Source\Component\CameraInput.h" />
     <ClInclude Include="..\Source\Component\SceneInput.h" />
     <ClInclude Include="..\Source\Component\SimpleScene.h" />
@@ -65,31 +59,8 @@
     <ClInclude Include="..\Source\include\glm.h" />
     <ClInclude Include="..\Source\include\math.h" />
     <ClInclude Include="..\Source\include\utils.h" />
-    <ClInclude Include="..\Source\Laboratoare\LabList.h" />
-    <ClInclude Include="..\Source\Laboratoare\Laborator1\Laborator1.h" />
-    <ClInclude Include="..\Source\Laboratoare\Laborator2\Laborator2.h" />
-    <ClInclude Include="..\Source\Laboratoare\Laborator3\Laborator3.h" />
-    <ClInclude Include="..\Source\Laboratoare\Laborator3\Laborator3_Vis2D.h" />
-    <ClInclude Include="..\Source\Laboratoare\Laborator3\Object2D.h" />
-    <ClInclude Include="..\Source\Laboratoare\Laborator3\Transform2D.h" />
-    <ClInclude Include="..\Source\Laboratoare\Laborator4\Laborator4.h" />
-    <ClInclude Include="..\Source\Laboratoare\Laborator4\Transform3D.h" />
-    <ClInclude Include="..\Source\Laboratoare\Laborator5\LabCamera.h" />
-    <ClInclude Include="..\Source\Laboratoare\Laborator5\Laborator5.h" />
-    <ClInclude Include="..\Source\Laboratoare\Laborator6\Laborator6.h" />
-    <ClInclude Include="..\Source\Laboratoare\Laborator7\Laborator7.h" />
-    <ClInclude Include="..\Source\Laboratoare\Laborator8\Laborator8.h" />
-    <ClInclude Include="..\Source\Laboratoare\Laborator9\Laborator9.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\Source\Laboratoare\Laborator6\Shaders\FragmentShader.glsl" />
-    <None Include="..\Source\Laboratoare\Laborator6\Shaders\VertexShader.glsl" />
-    <None Include="..\Source\Laboratoare\Laborator7\Shaders\FragmentShader.glsl" />
-    <None Include="..\Source\Laboratoare\Laborator7\Shaders\VertexShader.glsl" />
-    <None Include="..\Source\Laboratoare\Laborator8\Shaders\FragmentShader.glsl" />
-    <None Include="..\Source\Laboratoare\Laborator8\Shaders\VertexShader.glsl" />
-    <None Include="..\Source\Laboratoare\Laborator9\Shaders\FragmentShader.glsl" />
-    <None Include="..\Source\Laboratoare\Laborator9\Shaders\VertexShader.glsl" />
     <None Include="ClassDiagram.cd" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -97,6 +68,7 @@
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>Framework_EGC</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
+    <ProjectName>Tema1_EGC</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
