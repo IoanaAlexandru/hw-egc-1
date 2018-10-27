@@ -7,7 +7,7 @@ class Wall :
 	public Mesh
 {
 public:
-	// Create rectangle (brick) with given bottom left corner, length and color
-	Wall(std::string name, Position position, float window_height, float window_width, float thickness, glm::vec3 color);
+	// Create rectangle (wall) with given thickness and color in the given position using the window sizes
+	Wall(std::string name, Position position, float scene_height, float scene_width, float thickness, glm::vec3 color);
 	~Wall();
 };

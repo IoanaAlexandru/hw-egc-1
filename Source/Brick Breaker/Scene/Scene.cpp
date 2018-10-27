@@ -33,30 +33,43 @@ void Scene::Init()
 	camera->Update();
 	GetCameraInput()->SetActive(false);
 
+	// CREATE WALLS
 	float wall_thickness = min(resolution.x, resolution.y) * WALL_THICKNESS_RATIO;
-	float brick_width = resolution.x * BRICK_PANEL_WIDTH_RATIO / BRICKS_PER_ROW * (1 - BRICK_DISTANCE_RATIO),
-	      brick_height = resolution.y * BRICK_PANEL_HEIGHT_RATIO / BRICK_ROWS * (1 - BRICK_DISTANCE_RATIO);
-	float brick_distance_x = (resolution.x * BRICK_PANEL_WIDTH_RATIO - BRICKS_PER_ROW * brick_width) / (BRICKS_PER_ROW - 1),
-		  brick_distance_y = (resolution.y * BRICK_PANEL_HEIGHT_RATIO - BRICK_ROWS * brick_height) / (BRICK_ROWS - 1);
-	float x_offset = resolution.x * (1 - BRICK_PANEL_WIDTH_RATIO) / 2,
-		y_offset = resolution.y - (wall_thickness + brick_height);
-	glm::vec3 corner = glm::vec3(x_offset, y_offset, 0),
-		      color = glm::vec3(0.8, 0.3, 0.3);
+	glm::vec3 wall_color = glm::vec3(0.8, 0.3, 0.3);
+
+	walls.push_back(new Wall("wall-up", UP, resolution.y, resolution.x, wall_thickness, wall_color));
+	walls.push_back(new Wall("wall-left", LEFT, resolution.y, resolution.x, wall_thickness, wall_color));
+	walls.push_back(new Wall("wall-right", RIGHT, resolution.y, resolution.x, wall_thickness, wall_color));
+
+	// CREATE BRICKS
+	float brick_width = resolution.x * BRICK_PANEL_WIDTH_RATIO / BRICKS_PER_ROW * (1 - BRICK_DISTANCE_RATIO);
+	float brick_height = resolution.y * BRICK_PANEL_HEIGHT_RATIO / BRICK_ROWS * (1 - BRICK_DISTANCE_RATIO);
+
+	// Horizontal distance between bricks
+	float brick_distance_x = (resolution.x * BRICK_PANEL_WIDTH_RATIO - BRICKS_PER_ROW * brick_width) / (BRICKS_PER_ROW - 1);
+	// Vertical distance between bricks
+	float brick_distance_y = (resolution.y * BRICK_PANEL_HEIGHT_RATIO - BRICK_ROWS * brick_height) / (BRICK_ROWS - 1);
+
+	// There is a row of free space between the brick panel and the upper wall, of height equal to the brick height
+	float x_offset = resolution.x * (1 - BRICK_PANEL_WIDTH_RATIO) / 2;
+	// The brick panel is centered
+	float y_offset = resolution.y - (wall_thickness + brick_height);
+
+	// Top left corner of first brick at the top left of the brick panel
+	glm::vec3 corner = glm::vec3(x_offset, y_offset, 0);
+
+	glm::vec3 brick_color = glm::vec3(0.8, 0.3, 0.3);
 	bool fill = true;
 
 	for (auto i = 0; i < BRICK_ROWS; i++) {
 		for (auto j = 0; j < BRICKS_PER_ROW; j++) {
 			std::string name = "brick-" + to_string(i) + "-" + to_string(j);
-			bricks.push_back(new Brick(name, corner, brick_height, brick_width, color, fill));
+			bricks.push_back(new Brick(name, corner, brick_height, brick_width, brick_color, fill));
 			corner += glm::vec3(brick_width + brick_distance_x, 0, 0);
 		}
 		corner -= glm::vec3(0, brick_height + brick_distance_y, 0);
 		corner.x = x_offset;
 	}
-
-	walls.push_back(new Wall("wall-up", UP, resolution.y, resolution.x, wall_thickness, color));
-	walls.push_back(new Wall("wall-left", LEFT, resolution.y, resolution.x, wall_thickness, color));
-	walls.push_back(new Wall("wall-right", RIGHT, resolution.y, resolution.x, wall_thickness, color));
 }
 
 void Scene::FrameStart()
