@@ -23,6 +23,7 @@
     <ClCompile Include="..\Source\brickbreaker\generic\rectangle.cc" />
     <ClCompile Include="..\Source\brickbreaker\scene\ball.cc" />
     <ClCompile Include="..\Source\brickbreaker\scene\brick.cc" />
+    <ClCompile Include="..\Source\brickbreaker\scene\pausebutton.cpp" />
     <ClCompile Include="..\Source\brickbreaker\scene\platform.cc" />
     <ClCompile Include="..\Source\brickbreaker\scene\scene.cc" />
     <ClCompile Include="..\Source\brickbreaker\scene\wall.cc" />
@@ -49,6 +50,7 @@
     <ClInclude Include="..\Source\brickbreaker\generic\transform2d.h" />
     <ClInclude Include="..\Source\brickbreaker\scene\ball.h" />
     <ClInclude Include="..\Source\brickbreaker\scene\brick.h" />
+    <ClInclude Include="..\Source\brickbreaker\scene\pausebutton.h" />
     <ClInclude Include="..\Source\brickbreaker\scene\platform.h" />
     <ClInclude Include="..\Source\brickbreaker\scene\scene.h" />
     <ClInclude Include="..\Source\brickbreaker\scene\wall.h" />

@@ -94,6 +94,9 @@
       <Filter>brickbreaker\scene</Filter>
     </ClCompile>
     <ClCompile Include="..\Source\main.cc" />
+    <ClCompile Include="..\Source\brickbreaker\scene\pausebutton.cpp">
+      <Filter>brickbreaker\scene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source\Core\World.h">
@@ -175,6 +178,9 @@
       <Filter>brickbreaker\scene</Filter>
     </ClInclude>
     <ClInclude Include="..\Source\brickbreaker\scene\wall.h">
+      <Filter>brickbreaker\scene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\brickbreaker\scene\pausebutton.h">
       <Filter>brickbreaker\scene</Filter>
     </ClInclude>
   </ItemGroup>

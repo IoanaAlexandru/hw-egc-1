@@ -10,6 +10,7 @@
 #include "Core/Engine.h"
 #include "brickbreaker/scene/ball.h"
 #include "brickbreaker/scene/brick.h"
+#include "brickbreaker/scene/pausebutton.h"
 #include "brickbreaker/scene/platform.h"
 #include "brickbreaker/scene/wall.h"
 
@@ -51,13 +52,17 @@ class Scene : public SimpleScene {
   // ball diameter as a percentage of the platform width
   static const float kBallToPlatformRatio;
   static const int kBricksPerRow, kBrickRows;
+  static const float kPauseButtonSize;
 
   std::vector<std::vector<Brick *>> bricks_;
   std::map<animatedmesh::Position, Wall *> walls_;
   Platform *platform_;
   std::vector<Ball *> balls_;
+  PauseButton *pause_button_;
 
   float scene_width_, scene_height_;
+
+  bool paused_ = false;
 };
 }  // namespace brickbreaker
 

@@ -13,7 +13,8 @@ const float Scene::kBrickPanelWidthRatio = 0.8,
             Scene::kPlatformHeightToWidthRatio = 0.1,
             Scene::kWallThicknessRatio = 0.01,
             Scene::kBrickDistanceRatio = 0.15,
-            Scene::kBallToPlatformRatio = 0.15;
+            Scene::kBallToPlatformRatio = 0.15,
+            Scene::kPauseButtonSize = 100;
 const int Scene::kBricksPerRow = 15, Scene::kBrickRows = 8;
 
 Scene::Scene() {}
@@ -32,6 +33,14 @@ void Scene::Init() {
 
   scene_width_ = resolution.x;
   scene_height_ = resolution.y;
+
+  // CREATE PAUSE BUTTON
+
+  glm::vec3 pause_button_corner =
+      glm::vec3(resolution.x / 2 - kPauseButtonSize / 2,
+                resolution.y / 2 + kPauseButtonSize / 2, 0);
+  pause_button_ =
+      new PauseButton("pausebutton", pause_button_corner, kPauseButtonSize);
 
   // CREATE WALLS
   float wall_thickness =
@@ -118,6 +127,11 @@ void Scene::FrameStart() {
 }
 
 void Scene::Update(float deltaTimeSeconds) {
+  if (paused_) {
+    RenderMesh2D(pause_button_, shaders["VertexColor"], glm::mat3(1));
+    return;
+  }
+
   // RENDER BRICKS
   for (auto brick_line : bricks_) {
     for (auto brick : brick_line) {
@@ -239,7 +253,7 @@ void Scene::FrameEnd() {}
 void Scene::OnInputUpdate(float deltaTime, int mods) {}
 
 void Scene::OnKeyPress(int key, int mods) {
-  // add key press event
+  if (key == GLFW_KEY_P) paused_ = !paused_;
 }
 
 void Scene::OnKeyRelease(int key, int mods) {
