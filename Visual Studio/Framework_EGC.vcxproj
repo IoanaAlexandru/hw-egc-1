@@ -19,13 +19,13 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\Source\Brick Breaker\Generic\Circle.cpp" />
-    <ClCompile Include="..\Source\Brick Breaker\Generic\Rectangle.cpp" />
-    <ClCompile Include="..\Source\Brick Breaker\Scene\Ball.cpp" />
-    <ClCompile Include="..\Source\Brick Breaker\Scene\Brick.cpp" />
-    <ClCompile Include="..\Source\Brick Breaker\Scene\Platform.cpp" />
-    <ClCompile Include="..\Source\Brick Breaker\Scene\Scene.cpp" />
-    <ClCompile Include="..\Source\Brick Breaker\Scene\Wall.cpp" />
+    <ClCompile Include="..\Source\brickbreaker\generic\circle.cc" />
+    <ClCompile Include="..\Source\brickbreaker\generic\rectangle.cc" />
+    <ClCompile Include="..\Source\brickbreaker\scene\ball.cc" />
+    <ClCompile Include="..\Source\brickbreaker\scene\brick.cc" />
+    <ClCompile Include="..\Source\brickbreaker\scene\platform.cc" />
+    <ClCompile Include="..\Source\brickbreaker\scene\scene.cc" />
+    <ClCompile Include="..\Source\brickbreaker\scene\wall.cc" />
     <ClCompile Include="..\Source\Component\CameraInput.cpp" />
     <ClCompile Include="..\Source\Component\SceneInput.cpp" />
     <ClCompile Include="..\Source\Component\SimpleScene.cpp" />
@@ -40,18 +40,18 @@
     <ClCompile Include="..\Source\Core\Window\WindowObject.cpp" />
     <ClCompile Include="..\Source\Core\World.cpp" />
     <ClCompile Include="..\Source\include\gl.cpp" />
-    <ClCompile Include="..\Source\Main.cpp" />
+    <ClCompile Include="..\Source\main.cc" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Source\Brick Breaker\Generic\AnimatedMesh.h" />
-    <ClInclude Include="..\Source\Brick Breaker\Generic\Circle.h" />
-    <ClInclude Include="..\Source\Brick Breaker\Generic\Rectangle.h" />
-    <ClInclude Include="..\Source\Brick Breaker\Generic\Transform2D.h" />
-    <ClInclude Include="..\Source\Brick Breaker\Scene\Ball.h" />
-    <ClInclude Include="..\Source\Brick Breaker\Scene\Brick.h" />
-    <ClInclude Include="..\Source\Brick Breaker\Scene\Platform.h" />
-    <ClInclude Include="..\Source\Brick Breaker\Scene\Scene.h" />
-    <ClInclude Include="..\Source\Brick Breaker\Scene\Wall.h" />
+    <ClInclude Include="..\Source\brickbreaker\generic\animatedmesh.h" />
+    <ClInclude Include="..\Source\brickbreaker\generic\circle.h" />
+    <ClInclude Include="..\Source\brickbreaker\generic\rectangle.h" />
+    <ClInclude Include="..\Source\brickbreaker\generic\transform2d.h" />
+    <ClInclude Include="..\Source\brickbreaker\scene\ball.h" />
+    <ClInclude Include="..\Source\brickbreaker\scene\brick.h" />
+    <ClInclude Include="..\Source\brickbreaker\scene\platform.h" />
+    <ClInclude Include="..\Source\brickbreaker\scene\scene.h" />
+    <ClInclude Include="..\Source\brickbreaker\scene\wall.h" />
     <ClInclude Include="..\Source\Component\CameraInput.h" />
     <ClInclude Include="..\Source\Component\SceneInput.h" />
     <ClInclude Include="..\Source\Component\SimpleScene.h" />
