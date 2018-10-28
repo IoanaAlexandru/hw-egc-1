@@ -2,6 +2,7 @@
 
 #include <Component/SimpleScene.h>
 #include <string>
+#include <map>
 #include <Core/Engine.h>
 #include "Brick.h"
 #include "Wall.h"
@@ -44,12 +45,10 @@ class Scene : public SimpleScene
 			BRICK_ROWS;
 
 		std::vector<Brick*> bricks;
-		std::vector<Wall*> walls;
+		std::map<Position, Wall*> walls;
 		Platform *platform;
 		std::vector<Ball*> balls;
 
 		float scene_width,
-			scene_height,
-			platform_width,
-			wall_thickness;
+			scene_height;
 };

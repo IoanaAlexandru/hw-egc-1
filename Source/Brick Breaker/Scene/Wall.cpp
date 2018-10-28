@@ -5,6 +5,9 @@
 Wall::Wall(std::string name, Position position, float window_height, float window_width, float thickness, glm::vec3 color)
 	: Mesh(name)
 {
+	thickness_ = thickness;
+	position_ = position;
+
 	glm::vec3 vertex1, vertex2, vertex3, vertex4;
 
 	switch (position) {
@@ -51,3 +54,13 @@ Wall::Wall(std::string name, Position position, float window_height, float windo
 Wall::~Wall()
 {
 }
+
+float Wall::GetThickness() {
+	return thickness_;
+}
+
+Position Wall::GetPosition() {
+	return position_;
+}
+
+void Wall::Update(float delta_time_seconds) {}

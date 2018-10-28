@@ -5,22 +5,22 @@
 namespace Transform2D
 {
 	// Translate matrix
-	inline glm::mat3 Translate(float translateX, float translateY)
+	inline glm::mat3 Translate(float translate_x, float translate_y)
 	{
 		return glm::transpose(
-			glm::mat3(1, 0, translateX,
-				      0, 1, translateY,
+			glm::mat3(1, 0, translate_x,
+				      0, 1, translate_y,
 				      0, 0, 1)
 		);
 	}
 
 	// Scale matrix
-	inline glm::mat3 Scale(float scaleX, float scaleY)
+	inline glm::mat3 Scale(float scale_x, float scale_y)
 	{
 		return glm::transpose(
-			glm::mat3(scaleX,      0, 0,
-				           0, scaleY, 0,
-				           0,      0, 1)
+			glm::mat3(scale_x,       0, 0,
+				            0, scale_y, 0,
+				            0,       0, 1)
 		);
 	}
 

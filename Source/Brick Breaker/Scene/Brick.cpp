@@ -1,7 +1,7 @@
 #include "Brick.h"
 
-Brick::Brick(std::string name, glm::vec3 topLeftCorner, float height, float width, glm::vec3 color, bool fill)
-	: Rectangle(name, topLeftCorner, height, width, color, fill)
+Brick::Brick(std::string name, glm::vec3 top_left_corner, float height, float width, glm::vec3 color, bool fill)
+	: Rectangle(name, top_left_corner, height, width, color, fill)
 {
 }
 

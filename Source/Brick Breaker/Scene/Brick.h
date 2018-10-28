@@ -5,7 +5,7 @@ class Brick :
 {
 public:
 	// Create rectangle (brick) with given top left corner, size and color
-	Brick(std::string name, glm::vec3 topLeftCorner, float height, float width, glm::vec3 color, bool fill);
+	Brick(std::string name, glm::vec3 top_left_corner, float height, float width, glm::vec3 color, bool fill);
 	~Brick();
 	void Update(float delta_time_seconds);
 };

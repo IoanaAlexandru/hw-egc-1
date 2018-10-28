@@ -8,12 +8,12 @@
 
 using namespace std;
 
-const float Scene::BRICK_PANEL_WIDTH_RATIO = 0.75,
+const float Scene::BRICK_PANEL_WIDTH_RATIO = 0.8,
 Scene::BRICK_PANEL_HEIGHT_RATIO = 0.5,
 Scene::PLATFORM_WIDTH_RATIO = 0.15,
 Scene::PLATFORM_HEIGHT_TO_WIDTH_RATIO = 0.1,
 Scene::WALL_THICKNESS_RATIO = 0.01,
-Scene::BRICK_DISTANCE_RATIO = 0.1,
+Scene::BRICK_DISTANCE_RATIO = 0.15,
 Scene::BALL_TO_PLATFORM_RATIO = 0.15;
 const int Scene::BRICKS_PER_ROW = 15,
 Scene::BRICK_ROWS = 8;
@@ -40,12 +40,12 @@ void Scene::Init()
 	scene_height = resolution.y;
 
 	// CREATE WALLS
-	wall_thickness = min(scene_width, scene_height) * WALL_THICKNESS_RATIO;
+	float wall_thickness = min(scene_width, scene_height) * WALL_THICKNESS_RATIO;
 	glm::vec3 wall_color = glm::vec3(0.7, 0.2, 0.2);
 
-	walls.push_back(new Wall("wall-up", UP, scene_height, scene_width, wall_thickness, wall_color));
-	walls.push_back(new Wall("wall-left", LEFT, scene_height, scene_width, wall_thickness, wall_color));
-	walls.push_back(new Wall("wall-right", RIGHT, scene_height, scene_width, wall_thickness, wall_color));
+	walls.emplace(UP, new Wall("wall-up", UP, scene_height, scene_width, wall_thickness, wall_color));
+	walls.emplace(LEFT, new Wall("wall-left", LEFT, scene_height, scene_width, wall_thickness, wall_color));
+	walls.emplace(RIGHT, new Wall("wall-right", RIGHT, scene_height, scene_width, wall_thickness, wall_color));
 
 	// CREATE BRICKS
 	float brick_width = scene_width * BRICK_PANEL_WIDTH_RATIO / BRICKS_PER_ROW * (1 - BRICK_DISTANCE_RATIO);
@@ -78,7 +78,7 @@ void Scene::Init()
 	}
 
 	// CREATE PLATFORM
-	platform_width = scene_width * PLATFORM_WIDTH_RATIO;
+	float platform_width = scene_width * PLATFORM_WIDTH_RATIO;
 	float platform_height = platform_width * PLATFORM_HEIGHT_TO_WIDTH_RATIO;
 	glm::vec3 platform_corner = glm::vec3((scene_width - platform_width) / 2, wall_thickness + platform_height, 0);
 	glm::vec3 platform_color = glm::vec3(0.9, 0.4, 0.4);
@@ -112,13 +112,40 @@ void Scene::Update(float deltaTimeSeconds)
 	}
 
 	for (auto wall : walls) {
-		RenderMesh2D(wall, shaders["VertexColor"], glm::mat3(1));
+		RenderMesh2D(wall.second, shaders["VertexColor"], glm::mat3(1));
 	}
 
 	platform->Update(deltaTimeSeconds);
 	RenderMesh2D(platform, shaders["VertexColor"], platform->GetModelMatrix());
 
 	for (auto ball : balls) {
+		glm::vec3 center = ball->GetCenter();
+
+		if (center.y < walls[UP]->GetThickness() + platform->GetHeight() + ball->GetRadius()) {
+			ball->OnPlatformHit(platform->GetTopLeftCorner(), platform->GetWidth());
+		}
+
+		for (auto wall : walls) {
+			switch (wall.first) {
+			case UP:
+				if (center.y > scene_height - wall.second->GetThickness() - ball->GetRadius())
+					ball->OnWallCollision(UP);
+				break;
+			case DOWN:
+				if (center.y < wall.second->GetThickness() + ball->GetRadius())
+					ball->OnWallCollision(DOWN);
+				break;
+			case LEFT:
+				if (center.x < wall.second->GetThickness() + ball->GetRadius())
+					ball->OnWallCollision(LEFT);
+				break;
+			case RIGHT:
+				if (center.x > scene_width - wall.second->GetThickness() - ball->GetRadius())
+					ball->OnWallCollision(RIGHT);
+				break;
+			}
+		}
+
 		ball->Update(deltaTimeSeconds);
 		RenderMesh2D(ball, shaders["VertexColor"], ball->GetModelMatrix());
 	}
@@ -147,8 +174,8 @@ void Scene::OnKeyRelease(int key, int mods)
 void Scene::OnMouseMove(int mouseX, int mouseY, int deltaX, int deltaY)
 {
 	float new_pos = mouseX;
-	new_pos = max(platform_width / 2 + wall_thickness, new_pos);  // left limit
-	new_pos = min(scene_width - platform_width / 2 - wall_thickness, new_pos);  // right limit
+	new_pos = max(platform->GetWidth() / 2 + walls[UP]->GetThickness(), new_pos);  // left limit
+	new_pos = min(scene_width - platform->GetWidth() / 2 - walls[UP]->GetThickness(), new_pos);  // right limit
 	new_pos -= scene_width / 2;  // take into account original position of platform
 
 	platform->Move(new_pos);

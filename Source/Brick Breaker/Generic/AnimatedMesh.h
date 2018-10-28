@@ -1,5 +1,8 @@
 #pragma once
 #include "Core/GPU/Mesh.h"
+
+enum Position { UP, DOWN, LEFT, RIGHT };
+
 class AnimatedMesh :
 	public Mesh
 {

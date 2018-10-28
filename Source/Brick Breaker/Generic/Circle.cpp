@@ -5,6 +5,8 @@ Circle::Circle(std::string name, glm::vec3 center, float radius, glm::vec3 color
 {
 	radius_ = radius;
 	color_ = color;
+	center_ = center;
+	initial_center_ = center;
 
 	float theta = 0;
 	float x, y;
@@ -32,4 +34,17 @@ Circle::Circle(std::string name, glm::vec3 center, float radius, glm::vec3 color
 
 Circle::~Circle()
 {
+}
+
+glm::vec3 Circle::GetCenter() {
+	return center_;
+}
+
+float Circle::GetRadius() {
+	return radius_;
+}
+
+glm::vec3 Circle::GetColor()
+{
+	return color_;
 }
