@@ -17,7 +17,7 @@ new_position > 0 => movement to the right
 new_position < 0 => movement to the left
 */
 void Platform::Move(float new_position) {
-  top_left_corner_.x = initial_top_left_corner_.x + new_position;
+  center_.x = initial_center_.x + new_position;
   model_matrix_ = animatedmesh::Translate(new_position, 0);
 }
 }  // namespace brickbreaker

@@ -76,12 +76,14 @@ void Scene::Init() {
   bool fill = true;
 
   for (auto i = 0; i < kBrickRows; i++) {
+    std::vector<Brick*> brick_line;
     for (auto j = 0; j < kBricksPerRow; j++) {
       std::string name = "brick-" + std::to_string(i) + "-" + std::to_string(j);
-      bricks_.push_back(new Brick(name, brick_corner, brick_height, brick_width,
-                                  brick_color, fill));
+      brick_line.push_back(new Brick(name, brick_corner, brick_height,
+                                     brick_width, brick_color, fill));
       brick_corner += glm::vec3(brick_width + brick_distance_x, 0, 0);
     }
+    bricks_.push_back(brick_line);
     brick_corner -= glm::vec3(0, brick_height + brick_distance_y, 0);
     brick_corner.x = x_offset;
   }
@@ -116,49 +118,117 @@ void Scene::FrameStart() {
 }
 
 void Scene::Update(float deltaTimeSeconds) {
-  for (auto brick : bricks_) {
-    brick->Update(deltaTimeSeconds);
-    RenderMesh2D(brick, shaders["VertexColor"], brick->GetModelMatrix());
+  // RENDER BRICKS
+  for (auto brick_line : bricks_) {
+    for (auto brick : brick_line) {
+      brick->Update(deltaTimeSeconds);
+      RenderMesh2D(brick, shaders["VertexColor"], brick->GetModelMatrix());
+    }
   }
 
+  // RENDER WALLS
   for (auto wall : walls_) {
     RenderMesh2D(wall.second, shaders["VertexColor"], glm::mat3(1));
   }
 
+  // RENDER PLATFORM
   platform_->Update(deltaTimeSeconds);
   RenderMesh2D(platform_, shaders["VertexColor"], platform_->GetModelMatrix());
 
+  // CHECK BALL(S) COLLISIONS
   for (auto ball : balls_) {
-    glm::vec3 center = ball->GetCenter();
+    glm::vec3 ball_center = ball->GetCenter();
+    float ball_radius = ball->GetRadius();
 
-    if (center.y < walls_[animatedmesh::UP]->GetThickness() +
-                       platform_->GetHeight() + ball->GetRadius()) {
-      ball->OnPlatformHit(platform_->GetTopLeftCorner(), platform_->GetWidth());
+    // CHECK PLATFORM COLLISIONS
+    if (ball_center.y < walls_[animatedmesh::UP]->GetThickness() +
+                            platform_->GetHeight() + ball_radius) {
+      ball->OnPlatformHit(platform_->GetCenter(), platform_->GetWidth());
+      continue;
     }
 
+    // CHECK WALL COLLISIONS
     for (auto wall : walls_) {
       switch (wall.first) {
         case animatedmesh::UP:
-          if (center.y >
-              scene_height_ - wall.second->GetThickness() - ball->GetRadius())
-            ball->OnWallCollision(animatedmesh::UP);
+          if (ball_center.y >
+              scene_height_ - wall.second->GetThickness() - ball_radius) {
+            ball->OnHit(animatedmesh::UP);
+            continue;
+          }
           break;
         case animatedmesh::DOWN:
-          if (center.y < wall.second->GetThickness() + ball->GetRadius())
-            ball->OnWallCollision(animatedmesh::DOWN);
+          if (ball_center.y < wall.second->GetThickness() + ball_radius) {
+            ball->OnHit(animatedmesh::DOWN);
+            continue;
+          }
           break;
         case animatedmesh::LEFT:
-          if (center.x < wall.second->GetThickness() + ball->GetRadius())
-            ball->OnWallCollision(animatedmesh::LEFT);
+          if (ball_center.x < wall.second->GetThickness() + ball_radius) {
+            ball->OnHit(animatedmesh::LEFT);
+            continue;
+          }
           break;
         case animatedmesh::RIGHT:
-          if (center.x >
-              scene_width_ - wall.second->GetThickness() - ball->GetRadius())
-            ball->OnWallCollision(animatedmesh::RIGHT);
+          if (ball_center.x >
+              scene_width_ - wall.second->GetThickness() - ball_radius) {
+            ball->OnHit(animatedmesh::RIGHT);
+            continue;
+          }
           break;
       }
     }
 
+    // CHECK BRICK COLLISIONS
+    for (auto brick_line : bricks_) {
+      for (auto brick : brick_line) {
+        float brick_height = brick->GetHeight(),
+              brick_width = brick->GetWidth();
+        glm::vec3 brick_center = brick->GetCenter();
+        float up = brick_center.y + brick_height / 2,
+              down = brick_center.y - brick_height / 2,
+              left = brick_center.x - brick_width / 2,
+              right = brick_center.x + brick_width / 2;
+        glm::vec3 centers_difference = brick_center - ball_center;
+        bool brick_is_solid = brick->IsSolid();
+
+        if (abs(centers_difference.y) < brick_height / 2 + ball_radius &&
+            ball_center.x > left && ball_center.x < right) {
+          if (centers_difference.y > 0) {
+            brick->OnHit();
+            if (brick_is_solid) {
+              ball->OnHit(animatedmesh::UP);
+              continue;
+            }
+          } else {
+            brick->OnHit();
+            if (brick_is_solid) {
+              ball->OnHit(animatedmesh::DOWN);
+              continue;
+            }
+          }
+        } else if (abs(centers_difference.x) < brick_width / 2 + ball_radius &&
+                   ball_center.y < up && ball_center.y > down) {
+          if (centers_difference.x > 0) {
+            brick->OnHit();
+            if (brick_is_solid) {
+              ball->OnHit(animatedmesh::LEFT);
+              continue;
+            }
+          } else {
+            brick->OnHit();
+            if (brick_is_solid) {
+              ball->OnHit(animatedmesh::RIGHT);
+              continue;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // RENDER BALL(S)
+  for (auto ball : balls_) {
     ball->Update(deltaTimeSeconds);
     RenderMesh2D(ball, shaders["VertexColor"], ball->GetModelMatrix());
   }

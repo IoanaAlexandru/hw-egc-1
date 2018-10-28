@@ -17,13 +17,16 @@ class Ball : public animatedmesh::Circle {
   void Update(float delta_time_seconds);
   void StartMoving();
   void Move(float new_position);
-  void OnWallCollision(animatedmesh::Position wall_position);
+  void OnHit(animatedmesh::Position obstacle_position);
   void OnPlatformHit(glm::vec3 platform_top_left_corner, float platform_size);
+
+  inline float GetMovementX() { return movement_x_; }
+  inline float GetMovementY() { return movement_y_; }
 
  private:
   float movement_x_, movement_y_;
-  float movement_speed_;
-  bool is_moving_;
+  float movement_speed_ = kDefaultSpeed;
+  bool is_moving_ = false;
 };
 }  // namespace brickbreaker
 

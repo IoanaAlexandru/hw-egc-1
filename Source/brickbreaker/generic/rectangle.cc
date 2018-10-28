@@ -9,8 +9,8 @@ Rectangle::Rectangle(std::string name, glm::vec3 top_left_corner, float height,
   width_ = width;
   color_ = color;
   fill_ = fill;
-  top_left_corner_ = top_left_corner;
-  initial_top_left_corner_ = top_left_corner;
+  center_ = top_left_corner + glm::vec3(width / 2, -height / 2, 0);
+  initial_center_ = center_;
 
   glm::vec3 corner = top_left_corner;
 

@@ -52,7 +52,7 @@ class Scene : public SimpleScene {
   static const float kBallToPlatformRatio;
   static const int kBricksPerRow, kBrickRows;
 
-  std::vector<Brick *> bricks_;
+  std::vector<std::vector<Brick *>> bricks_;
   std::map<animatedmesh::Position, Wall *> walls_;
   Platform *platform_;
   std::vector<Ball *> balls_;
