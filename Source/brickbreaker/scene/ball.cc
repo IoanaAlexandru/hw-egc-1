@@ -26,11 +26,15 @@ void Ball::StartMoving() {
   }
 }
 
+/*
+Move ball center horizontally with new_position.
+
+new_position > 0 => movement to the right
+new_position < 0 => movement to the left
+*/
 void Ball::Move(float new_position) {
-  if (!is_moving_) {
-    center_.x = initial_center_.x + new_position;
-    model_matrix_ = animatedmesh::Translate(new_position, 0);
-  }
+  center_.x = initial_center_.x + new_position;
+  model_matrix_ = animatedmesh::Translate(new_position, 0);
 }
 
 void Ball::OnHit(animatedmesh::Position obstacle_position) {

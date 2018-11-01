@@ -163,31 +163,26 @@ void Scene::Update(float deltaTimeSeconds) {
 
     // CHECK WALL COLLISIONS
     for (auto wall : walls_) {
+      float wall_thickness = wall.second->GetThickness();
       switch (wall.first) {
         case animatedmesh::UP:
-          if (ball_center.y >
-              scene_height_ - wall.second->GetThickness() - ball_radius) {
+          if (ball_center.y > scene_height_ - wall_thickness - ball_radius) {
             ball->OnHit(animatedmesh::UP);
-            continue;
           }
           break;
         case animatedmesh::DOWN:
-          if (ball_center.y < wall.second->GetThickness() + ball_radius) {
+          if (ball_center.y < wall_thickness + ball_radius) {
             ball->OnHit(animatedmesh::DOWN);
-            continue;
           }
           break;
         case animatedmesh::LEFT:
-          if (ball_center.x < wall.second->GetThickness() + ball_radius) {
+          if (ball_center.x < wall_thickness + ball_radius) {
             ball->OnHit(animatedmesh::LEFT);
-            continue;
           }
           break;
         case animatedmesh::RIGHT:
-          if (ball_center.x >
-              scene_width_ - wall.second->GetThickness() - ball_radius) {
+          if (ball_center.x > scene_width_ - wall_thickness - ball_radius) {
             ball->OnHit(animatedmesh::RIGHT);
-            continue;
           }
           break;
       }
@@ -262,17 +257,22 @@ void Scene::OnKeyRelease(int key, int mods) {
 
 void Scene::OnMouseMove(int mouseX, int mouseY, int deltaX, int deltaY) {
   float new_pos = (float)mouseX;
-  new_pos = std::max(
-      platform_->GetWidth() / 2 + walls_[animatedmesh::UP]->GetThickness(),
-      new_pos);  // left limit
-  new_pos = std::min(scene_width_ - platform_->GetWidth() / 2 -
-                         walls_[animatedmesh::UP]->GetThickness(),
-                     new_pos);  // right limit
-  new_pos -=
-      scene_width_ / 2;  // take into account original position of platform
+  float platform_width = platform_->GetWidth();
+  float walls_thickness = walls_[animatedmesh::UP]->GetThickness();
+
+  // Check left limit (platform stops at wall)
+  new_pos = std::max(platform_width / 2 + walls_thickness, new_pos);
+  // Check right limit
+  new_pos =
+      std::min(scene_width_ - platform_width / 2 - walls_thickness, new_pos);
+  // Take into account original position of platform
+  new_pos -= scene_width_ / 2;
 
   platform_->Move(new_pos);
-  for (auto ball : balls_) ball->Move(new_pos);
+  // If a ball is not moving (i.e., it is stuck to the platform), move it as
+  // well, together with the platform.
+  for (auto ball : balls_)
+    if (!ball->IsMoving()) ball->Move(new_pos);
 }
 
 void Scene::OnMouseBtnPress(int mouseX, int mouseY, int button, int mods) {

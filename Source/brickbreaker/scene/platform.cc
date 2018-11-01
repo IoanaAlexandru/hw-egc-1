@@ -13,6 +13,7 @@ void Platform::Update(float delta_time_seconds) {}
 
 /*
 Move platform center with new_position. (Platform only moves horizontally)
+
 new_position > 0 => movement to the right
 new_position < 0 => movement to the left
 */

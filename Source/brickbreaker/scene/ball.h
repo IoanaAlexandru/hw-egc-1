@@ -22,6 +22,7 @@ class Ball : public animatedmesh::Circle {
 
   inline float GetMovementX() { return movement_x_; }
   inline float GetMovementY() { return movement_y_; }
+  inline bool IsMoving() { return is_moving_; }
 
  private:
   float movement_x_, movement_y_;
