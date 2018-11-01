@@ -36,6 +36,12 @@ class Scene : public SimpleScene {
   void OnMouseScroll(int mouseX, int mouseY, int offsetX, int offsetY) override;
   void OnWindowResize(int width, int height) override;
 
+  void InitPauseButton();
+  void InitWalls();
+  void InitBrickPanel();
+  void InitPlatform();
+  void InitBall();
+
  protected:
   // percentage of scene width reserved for brick panel
   static const float kBrickPanelWidthRatio;
@@ -45,7 +51,7 @@ class Scene : public SimpleScene {
   static const float kPlatformWidthRatio;
   // platform height as a percentage of platform width
   static const float kPlatformHeightToWidthRatio;
-  // wall thickness as a percentage of the smallest scene dimension (width or height)
+  // wall thickness as a percentage of the smallest scene dimension
   static const float kWallThicknessRatio;
   // percentage of brick panel reserved for the space between bricks
   static const float kBrickDistanceRatio;
@@ -53,6 +59,7 @@ class Scene : public SimpleScene {
   static const float kBallToPlatformRatio;
   static const int kBricksPerRow, kBrickRows;
   static const float kPauseButtonSize;
+  static const int kMaxLives;
 
   std::vector<std::vector<Brick *>> bricks_;
   std::map<animatedmesh::Position, Wall *> walls_;
@@ -61,8 +68,12 @@ class Scene : public SimpleScene {
   PauseButton *pause_button_;
 
   float scene_width_, scene_height_;
+  float wall_thickness_;
+  float brick_width_, brick_height_;
+  float platform_width_, platform_height_;
 
   bool paused_ = false;
+  int lives_ = kMaxLives;
 };
 }  // namespace brickbreaker
 
