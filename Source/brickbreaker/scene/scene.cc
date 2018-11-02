@@ -322,9 +322,11 @@ void Scene::Update(float deltaTimeSeconds) {
       powerup->OnPlatformHit(platform_->GetCenter(), platform_width_);
       if (powerup->IsActivated()) {
         (this->*activate)();
+        p++;
+      } else {
+        p = powerups_.erase(p);  // powerup fell
       }
-    }
-    if (powerup->IsActivated() && !powerup->IsActive()) {
+    } else if (powerup->IsActivated() && !powerup->IsActive()) {
       p = powerups_.erase(p);
       (this->*deactivate)();
     } else {
