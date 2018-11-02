@@ -16,7 +16,8 @@ class Brick : public animatedmesh::Rectangle {
         glm::vec3 color, bool fill);
   ~Brick();
 
-  inline bool IsSolid() { return !is_shrinking_; }
+  inline bool IsSolid() { return !is_shrinking_ && is_solid_; }
+  inline bool IsShrinking() { return is_shrinking_; }
 
   void Update(float delta_time_seconds);
   void OnHit();
@@ -24,6 +25,7 @@ class Brick : public animatedmesh::Rectangle {
  private:
   bool is_shrinking_ = false;
   float shrinking_speed_ = kDefaultShrinkingSpeed;
+  bool is_solid_ = true;
 
   void Shrink();
 };

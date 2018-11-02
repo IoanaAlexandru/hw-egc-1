@@ -13,7 +13,8 @@ const float Scene::kBrickPanelWidthRatio = 0.8,
             Scene::kPlatformHeightToWidthRatio = 0.1,
             Scene::kWallThicknessRatio = 0.01,
             Scene::kBrickDistanceRatio = 0.15,
-            Scene::kBallToPlatformRatio = 0.15, Scene::kPauseButtonSize = 100;
+            Scene::kBallToPlatformRatio = 0.15, Scene::kPauseButtonSize = 100,
+            Scene::kPowerupChance = 0.2, Scene::kPowerupSize = 20;
 const int Scene::kBricksPerRow = 15, Scene::kBrickRows = 8,
           Scene::kMaxLives = 3;
 
@@ -69,7 +70,7 @@ void Scene::InitBrickPanel() {
   bool fill = true;
 
   for (auto i = 0; i < kBrickRows; i++) {
-    std::vector<Brick*> brick_line;
+    std::vector<Brick *> brick_line;
     for (auto j = 0; j < kBricksPerRow; j++) {
       std::string name = "brick-" + std::to_string(i) + "-" + std::to_string(j);
       brick_line.push_back(new Brick(name, brick_corner, brick_height_,
@@ -112,6 +113,8 @@ void Scene::Init() {
   camera->Update();
   GetCameraInput()->SetActive(false);
 
+  distribution_ = std::bernoulli_distribution(kPowerupChance);
+
   scene_width_ = resolution.x;
   scene_height_ = resolution.y;
 
@@ -130,6 +133,12 @@ void Scene::Init() {
   InitBrickPanel();
   InitPlatform();
   InitBall();
+}
+
+void Scene::SpawnPowerup(glm::vec3 top_left_corner) {
+  std::string name = "powerup-" + std::to_string(powerups_.size());
+  powerups_.push_back(new Powerup(name, top_left_corner, kPowerupSize,
+                                  glm::vec3(0.96, 0.76, 0.05), true));
 }
 
 void Scene::FrameStart() {
@@ -205,42 +214,53 @@ void Scene::Update(float deltaTimeSeconds) {
     // Check brick collisions
     for (auto brick_line : bricks_) {
       for (auto brick : brick_line) {
-        glm::vec3 brick_center = brick->GetCenter();
-        float up = brick_center.y + brick_height_ / 2,
-              down = brick_center.y - brick_height_ / 2,
-              left = brick_center.x - brick_width_ / 2,
-              right = brick_center.x + brick_width_ / 2;
-        glm::vec3 centers_difference = brick_center - ball_center;
-        bool brick_is_solid = brick->IsSolid();
+        if (!brick->IsShrinking()) {
+          glm::vec3 brick_center = brick->GetCenter();
+          float up = brick_center.y + brick_height_ / 2,
+                down = brick_center.y - brick_height_ / 2,
+                left = brick_center.x - brick_width_ / 2,
+                right = brick_center.x + brick_width_ / 2;
+          glm::vec3 centers_difference = brick_center - ball_center;
+          bool brick_is_solid = brick->IsSolid();
 
-        if (abs(centers_difference.y) < brick_height_ / 2 + ball_radius &&
-            ball_center.x > left && ball_center.x < right) {
-          if (centers_difference.y > 0) {
-            brick->OnHit();
-            if (brick_is_solid) {
-              ball->OnHit(animatedmesh::UP);
-              continue;
+          if (abs(centers_difference.y) < brick_height_ / 2 + ball_radius &&
+              ball_center.x > left && ball_center.x < right) {
+            if (centers_difference.y > 0) {
+              brick->OnHit();
+              if (brick->IsShrinking() && ShouldSpawnPowerup())
+                SpawnPowerup(brick->GetCenter());
+              if (brick_is_solid) {
+                ball->OnHit(animatedmesh::UP);
+                continue;
+              }
+            } else {
+              brick->OnHit();
+              if (brick->IsShrinking() && ShouldSpawnPowerup())
+                SpawnPowerup(brick->GetCenter());
+              if (brick_is_solid) {
+                ball->OnHit(animatedmesh::DOWN);
+                continue;
+              }
             }
-          } else {
-            brick->OnHit();
-            if (brick_is_solid) {
-              ball->OnHit(animatedmesh::DOWN);
-              continue;
-            }
-          }
-        } else if (abs(centers_difference.x) < brick_width_ / 2 + ball_radius &&
-                   ball_center.y < up && ball_center.y > down) {
-          if (centers_difference.x > 0) {
-            brick->OnHit();
-            if (brick_is_solid) {
-              ball->OnHit(animatedmesh::LEFT);
-              continue;
-            }
-          } else {
-            brick->OnHit();
-            if (brick_is_solid) {
-              ball->OnHit(animatedmesh::RIGHT);
-              continue;
+          } else if (abs(centers_difference.x) <
+                         brick_width_ / 2 + ball_radius &&
+                     ball_center.y < up && ball_center.y > down) {
+            if (centers_difference.x > 0) {
+              brick->OnHit();
+              if (brick->IsShrinking() && ShouldSpawnPowerup())
+                SpawnPowerup(brick->GetCenter());
+              if (brick_is_solid) {
+                ball->OnHit(animatedmesh::LEFT);
+                continue;
+              }
+            } else {
+              brick->OnHit();
+              if (brick->IsShrinking() && ShouldSpawnPowerup())
+                SpawnPowerup(brick->GetCenter());
+              if (brick_is_solid) {
+                ball->OnHit(animatedmesh::RIGHT);
+                continue;
+              }
             }
           }
         }
@@ -272,6 +292,14 @@ void Scene::Update(float deltaTimeSeconds) {
   if (lives_ <= 0) {
     InitBrickPanel();
     lives_ = kMaxLives;
+  }
+
+  // Render powerups
+  for (auto powerup : powerups_) {
+    if (powerup->GetCenter().y < wall_thickness_ + platform_height_)
+      powerup->OnPlatformHit(platform_->GetCenter(), platform_width_);
+    powerup->Update(deltaTimeSeconds);
+    RenderMesh2D(powerup, shaders["VertexColor"], powerup->GetModelMatrix());
   }
 }
 

@@ -4,6 +4,7 @@
 #pragma once
 
 #include <map>
+#include <random>
 #include <string>
 
 #include "Component/SimpleScene.h"
@@ -12,6 +13,7 @@
 #include "brickbreaker/scene/brick.h"
 #include "brickbreaker/scene/pausebutton.h"
 #include "brickbreaker/scene/platform.h"
+#include "brickbreaker/scene/powerup.h"
 #include "brickbreaker/scene/wall.h"
 
 namespace brickbreaker {
@@ -42,6 +44,11 @@ class Scene : public SimpleScene {
   void InitPlatform();
   void InitBall();
 
+  std::default_random_engine generator_;
+  std::bernoulli_distribution distribution_;
+  inline bool ShouldSpawnPowerup() { return distribution_(generator_); }
+  void SpawnPowerup(glm::vec3 top_left_corner);
+
  protected:
   // percentage of scene width reserved for brick panel
   static const float kBrickPanelWidthRatio;
@@ -60,11 +67,15 @@ class Scene : public SimpleScene {
   static const int kBricksPerRow, kBrickRows;
   static const float kPauseButtonSize;
   static const int kMaxLives;
+  // chance of a powerup to spawn after a brick is destroyed
+  static const float kPowerupChance;
+  static const float kPowerupSize;
 
   std::vector<std::vector<Brick *>> bricks_;
   std::map<animatedmesh::Position, Wall *> walls_;
   Platform *platform_;
   std::vector<Ball *> balls_;
+  std::vector<Powerup *> powerups_;
   PauseButton *pause_button_;
 
   float scene_width_, scene_height_;
