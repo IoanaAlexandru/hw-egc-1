@@ -19,9 +19,12 @@ void Powerup::Update(float delta_time_seconds) {
     model_matrix_ *=
         animatedmesh::Translate(-initial_center_.x, -initial_center_.y);
   } else {
-    model_matrix_ *= animatedmesh::Translate(0, -fall_speed_);
     center_ += glm::vec3(0, -fall_speed_, 0);
-    // TODO rotate
+    angle_ += rotation_speed_;
+    model_matrix_ = animatedmesh::Translate(center_.x, center_.y);
+    model_matrix_ *= animatedmesh::Rotate(angle_);
+    model_matrix_ *=
+        animatedmesh::Translate(-initial_center_.x, -initial_center_.y);
   }
 }
 

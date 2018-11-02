@@ -10,7 +10,7 @@ class Powerup : public animatedmesh::Rectangle {
   // Default falling speed of powerup
   float kDefaultFallSpeed = 4;
   // Default rotation speed (in radians)
-  float kDefaultRotationSpeed = 10;
+  float kDefaultRotationSpeed = 0.05;
   // Default shrinking speed: number between 0 and 1, where a higher value
   // represents a slower shrinking speed (0 is instant, 1 doesn't shrink)
   double kDefaultShrinkingSpeed = 0.8;
@@ -27,6 +27,8 @@ class Powerup : public animatedmesh::Rectangle {
   float fall_speed_ = kDefaultFallSpeed;
   float rotation_speed_ = kDefaultRotationSpeed;
   float shrinking_speed_ = kDefaultShrinkingSpeed;
+
+  float angle_ = 0;
 
   bool is_shrinking_ = false;
 };
