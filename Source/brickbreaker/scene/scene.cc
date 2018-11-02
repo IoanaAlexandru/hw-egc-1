@@ -18,6 +18,7 @@ const float Scene::kBrickPanelWidthRatio = 0.8,
             Scene::kPowerupSize = 20;
 const int Scene::kBricksPerRow = 15, Scene::kBrickRows = 8,
           Scene::kMaxLives = 3;
+const glm::vec3 Scene::wall_color_ = glm::vec3(0.7, 0.2, 0.2);
 
 Scene::Scene() {}
 
@@ -33,17 +34,16 @@ void Scene::InitPauseButton() {
 
 void Scene::InitWalls() {
   walls_.clear();
-  glm::vec3 wall_color = glm::vec3(0.7, 0.2, 0.2);
 
   walls_.emplace(animatedmesh::UP,
                  new Wall("wall-up", animatedmesh::UP, scene_height_,
-                          scene_width_, wall_thickness_, wall_color));
+                          scene_width_, wall_thickness_, wall_color_));
   walls_.emplace(animatedmesh::LEFT,
                  new Wall("wall-left", animatedmesh::LEFT, scene_height_,
-                          scene_width_, wall_thickness_, wall_color));
+                          scene_width_, wall_thickness_, wall_color_));
   walls_.emplace(animatedmesh::RIGHT,
                  new Wall("wall-right", animatedmesh::RIGHT, scene_height_,
-                          scene_width_, wall_thickness_, wall_color));
+                          scene_width_, wall_thickness_, wall_color_));
 }
 
 void Scene::InitBrickPanel() {
@@ -148,10 +148,14 @@ void Scene::SpawnPowerup(glm::vec3 top_left_corner) {
     powerups_.emplace_back(
         new Powerup(name, top_left_corner, kPowerupSize, red, true),
         std::make_pair(&Scene::ShrinkPlatform, &Scene::StretchPlatform));
-  } else {
+  } else if (RandomPowerup()) {
     powerups_.emplace_back(
         new Powerup(name, top_left_corner, kPowerupSize, green, true),
         std::make_pair(&Scene::StretchPlatform, &Scene::ShrinkPlatform));
+  } else {
+    powerups_.emplace_back(
+        new Powerup(name, top_left_corner, kPowerupSize, green, true),
+        std::make_pair(&Scene::AddBottomWall, &Scene::RemoveBottomWall));
   }
 }
 
@@ -193,12 +197,6 @@ void Scene::Update(float deltaTimeSeconds) {
     glm::vec3 ball_center = ball->GetCenter();
     float ball_radius = ball->GetRadius();
 
-    // Check platform collisions
-    if (ball_center.y < wall_thickness_ + platform_height_ + ball_radius) {
-      ball->OnPlatformHit(platform_->GetCenter(), platform_width_);
-      continue;
-    }
-
     // Check wall collisions
     for (auto wall : walls_) {
       switch (wall.first) {
@@ -223,6 +221,12 @@ void Scene::Update(float deltaTimeSeconds) {
           }
           break;
       }
+    }
+
+    // Check platform collisions
+    if (ball_center.y < wall_thickness_ + platform_height_ + ball_radius) {
+      ball->OnPlatformHit(platform_->GetCenter(), platform_width_);
+      continue;
     }
 
     // Check brick collisions

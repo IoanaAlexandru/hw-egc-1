@@ -61,6 +61,14 @@ class Scene : public SimpleScene {
     platform_width_ = platform_->GetWidth();
   }
 
+  inline void AddBottomWall() {
+    walls_.emplace(animatedmesh::DOWN,
+                   new Wall("wall-down", animatedmesh::DOWN, scene_height_,
+                            scene_width_, wall_thickness_, wall_color_));
+  }
+
+  inline void RemoveBottomWall() { walls_.erase(animatedmesh::DOWN); }
+
   // percentage of scene width reserved for brick panel
   static const float kBrickPanelWidthRatio;
   // percentage of scene height reserved for brick panel
@@ -92,7 +100,8 @@ class Scene : public SimpleScene {
 
   // First element is a powerup, second element is a pair of functions for
   // activating/deactivating the powerup's effect
-  std::vector<std::pair<Powerup *, std::pair<void(Scene::*)(), void(Scene::*)()>>>
+  std::vector<
+      std::pair<Powerup *, std::pair<void (Scene::*)(), void (Scene::*)()>>>
       powerups_;
 
   float scene_width_, scene_height_;
@@ -103,6 +112,8 @@ class Scene : public SimpleScene {
 
   bool paused_ = false;
   int lives_ = kMaxLives;
+
+  static const glm::vec3 wall_color_;
 };
 }  // namespace brickbreaker
 

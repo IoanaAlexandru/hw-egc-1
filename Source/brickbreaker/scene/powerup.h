@@ -15,7 +15,7 @@ class Powerup : public animatedmesh::Rectangle {
   // represents a slower shrinking speed (0 is instant, 1 doesn't shrink)
   double kDefaultShrinkingSpeed = 0.8;
   // Default lifespan of powerup, in seconds
-  double kDefaultLifespan = 30;
+  double kDefaultLifespan = 10;
 
   // Create square (powerup) with given position, size, color and fill
   Powerup(std::string name, glm::vec3 top_left_corner, float length,
