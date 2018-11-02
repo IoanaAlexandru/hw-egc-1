@@ -14,7 +14,8 @@ const float Scene::kBrickPanelWidthRatio = 0.8,
             Scene::kWallThicknessRatio = 0.01,
             Scene::kBrickDistanceRatio = 0.15,
             Scene::kBallToPlatformRatio = 0.15, Scene::kPauseButtonSize = 100,
-            Scene::kPowerupChance = 0.2, Scene::kPowerupSize = 20;
+            Scene::kPowerupSpawnChance = 0.2, Scene::kPowerupChance = 0.5,
+            Scene::kPowerupSize = 20;
 const int Scene::kBricksPerRow = 15, Scene::kBrickRows = 8,
           Scene::kMaxLives = 3;
 
@@ -112,10 +113,8 @@ void Scene::Init() {
   camera->Update();
   GetCameraInput()->SetActive(false);
 
-  distribution_ = std::bernoulli_distribution(kPowerupChance);
-
-  powerup_effects_.emplace_back(&Scene::ActivateShrinkPlatform,
-                                &Scene::DeactivateShrinkPlatform);
+  powerup_spawn_chance_ = std::bernoulli_distribution(kPowerupSpawnChance);
+  powerup_chance_ = std::bernoulli_distribution(kPowerupChance);
 
   scene_width_ = resolution.x;
   scene_height_ = resolution.y;
@@ -139,10 +138,21 @@ void Scene::Init() {
 }
 
 void Scene::SpawnPowerup(glm::vec3 top_left_corner) {
+  glm::vec3 yellow = glm::vec3(0.96, 0.76, 0.05);
+  glm::vec3 red = glm::vec3(0.86, 0.20, 0.21);
+  glm::vec3 green = glm::vec3(0.24, 0.73, 0.33);
+
   std::string name = "powerup-" + std::to_string(powerups_.size());
-  powerups_.emplace_back(new Powerup(name, top_left_corner, kPowerupSize,
-                                     glm::vec3(0.96, 0.76, 0.05), true),
-                         powerup_effects_[0]);
+
+  if (RandomPowerup()) {
+    powerups_.emplace_back(
+        new Powerup(name, top_left_corner, kPowerupSize, red, true),
+        std::make_pair(&Scene::ShrinkPlatform, &Scene::StretchPlatform));
+  } else {
+    powerups_.emplace_back(
+        new Powerup(name, top_left_corner, kPowerupSize, green, true),
+        std::make_pair(&Scene::StretchPlatform, &Scene::ShrinkPlatform));
+  }
 }
 
 void Scene::FrameStart() {
@@ -307,14 +317,12 @@ void Scene::Update(float deltaTimeSeconds) {
         !powerup->IsActivated()) {
       powerup->OnPlatformHit(platform_->GetCenter(), platform_width_);
       if (powerup->IsActivated()) {
-        std::cout << "ACTIVATE\n";
-         (this->*activate)();
+        (this->*activate)();
       }
     }
     if (powerup->IsActivated() && !powerup->IsActive()) {
-      std::cout << "DEACTIVATE\n";
       p = powerups_.erase(p);
-       (this->*deactivate)();
+      (this->*deactivate)();
     } else {
       p++;
     }

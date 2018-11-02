@@ -44,18 +44,20 @@ class Scene : public SimpleScene {
   void InitPlatform();
   void InitBall();
 
-  std::default_random_engine generator_;
-  std::bernoulli_distribution distribution_;
-  inline bool ShouldSpawnPowerup() { return distribution_(generator_); }
+  std::default_random_engine random_;
+  std::bernoulli_distribution powerup_chance_;
+  std::bernoulli_distribution powerup_spawn_chance_;
+  inline bool ShouldSpawnPowerup() { return powerup_spawn_chance_(random_); }
+  inline bool RandomPowerup() { return powerup_chance_(random_); }
   void SpawnPowerup(glm::vec3 top_left_corner);
 
-  inline void ActivateShrinkPlatform() {
+  inline void ShrinkPlatform() {
     platform_->ShrinkWidth();
     platform_width_ = platform_->GetWidth();
   }
 
-  inline void DeactivateShrinkPlatform() {
-    platform_->UnshrinkWidth();
+  inline void StretchPlatform() {
+    platform_->StretchWidth();
     platform_width_ = platform_->GetWidth();
   }
 
@@ -77,6 +79,8 @@ class Scene : public SimpleScene {
   static const float kPauseButtonSize;
   static const int kMaxLives;
   // chance of a powerup to spawn after a brick is destroyed
+  static const float kPowerupSpawnChance;
+  // chance for a certain type of powerup to spawn
   static const float kPowerupChance;
   static const float kPowerupSize;
 
@@ -90,7 +94,6 @@ class Scene : public SimpleScene {
   // activating/deactivating the powerup's effect
   std::vector<std::pair<Powerup *, std::pair<void(Scene::*)(), void(Scene::*)()>>>
       powerups_;
-  std::vector<std::pair<void(Scene::*)(), void(Scene::*)()>> powerup_effects_;
 
   float scene_width_, scene_height_;
   float wall_thickness_;

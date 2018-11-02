@@ -31,12 +31,12 @@ void Platform::Move(float new_position) {
 }
 
 void Platform::ShrinkWidth() {
-  width_ /= kShrinkRate;
-  scale_matrix_ *= animatedmesh::Scale(1 / kShrinkRate, 1);
+  width_ /= kResizeRate;
+  scale_matrix_ *= animatedmesh::Scale(1 / kResizeRate, 1);
 }
 
-void Platform::UnshrinkWidth() {
-  width_ *= kShrinkRate;
-  scale_matrix_ *= animatedmesh::Scale(kShrinkRate, 1);
+void Platform::StretchWidth() {
+  width_ *= kResizeRate;
+  scale_matrix_ *= animatedmesh::Scale(kResizeRate, 1);
 }
 }  // namespace brickbreaker

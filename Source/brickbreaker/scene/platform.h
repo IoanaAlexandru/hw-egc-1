@@ -12,14 +12,14 @@ class Platform : public animatedmesh::Rectangle {
            float width, glm::vec3 color, bool fill);
   ~Platform();
 
-  // The number of times that the width shrinks
-  float kShrinkRate = 1.5;
+  // The number of times that the width shrinks/stretches
+  float kResizeRate = 1.5;
 
   void Update(float delta_time_seconds);
   void Move(float mouse_position);
 
   void ShrinkWidth();
-  void UnshrinkWidth();
+  void StretchWidth();
 
   glm::mat3 scale_matrix_ = glm::mat3(1);
 };
