@@ -20,10 +20,8 @@ void Ball::Update(float delta_time_seconds) {
 }
 
 void Ball::StartMoving() {
-  if (!is_moving_) {
-    is_moving_ = true;
-    movement_y_ = movement_speed_;
-  }
+  is_moving_ = true;
+  movement_y_ = movement_speed_;
 }
 
 /*

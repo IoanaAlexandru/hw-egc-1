@@ -14,11 +14,12 @@ const float Scene::kBrickPanelWidthRatio = 0.8,
             Scene::kWallThicknessRatio = 0.01,
             Scene::kBrickDistanceRatio = 0.15,
             Scene::kBallToPlatformRatio = 0.15, Scene::kPauseButtonSize = 100,
-            Scene::kPowerupSpawnChance = 0.2, Scene::kPowerupChance = 0.5,
+            Scene::kPowerupSpawnChance = 0.2, Scene::kPowerupChance = 0.3,
             Scene::kPowerupSize = 20;
 const int Scene::kBricksPerRow = 15, Scene::kBrickRows = 8,
           Scene::kMaxLives = 3;
-const glm::vec3 Scene::wall_color_ = glm::vec3(0.7, 0.2, 0.2);
+const glm::vec3 Scene::wall_color_ = glm::vec3(0.7, 0.2, 0.2),
+                Scene::ball_color_ = glm::vec3(1, 1, 1);
 
 Scene::Scene() {}
 
@@ -98,9 +99,8 @@ void Scene::InitBall() {
 
   glm::vec3 ball_center = glm::vec3(
       scene_width_ / 2, wall_thickness_ + platform_height_ + ball_radius_, 0);
-  glm::vec3 ball_color = glm::vec3(1, 1, 1);
 
-  balls_.push_back(new Ball("ball-0", ball_center, ball_radius_, ball_color));
+  balls_.push_back(new Ball("ball-0", ball_center, ball_radius_, ball_color_));
 }
 
 void Scene::Init() {
@@ -142,25 +142,30 @@ void Scene::SpawnPowerup(glm::vec3 top_left_corner) {
   glm::vec3 red = glm::vec3(0.86, 0.20, 0.21);
   glm::vec3 green = glm::vec3(0.24, 0.73, 0.33);
 
+  Powerup *powerup;
+  std::pair<void (Scene::*)(), void (Scene::*)()> effect;
   std::string name = "powerup-" + std::to_string(powerups_.size());
 
   if (RandomPowerup()) {
-    powerups_.emplace_back(
-        new Powerup(name, top_left_corner, kPowerupSize, red, true),
-        std::make_pair(&Scene::ShrinkPlatform, &Scene::StretchPlatform));
+    powerup = new Powerup(name, top_left_corner, kPowerupSize, red, true);
+    effect = std::make_pair(&Scene::ShrinkPlatform, &Scene::StretchPlatform);
   } else if (RandomPowerup()) {
-    powerups_.emplace_back(
-        new Powerup(name, top_left_corner, kPowerupSize, green, true),
-        std::make_pair(&Scene::StretchPlatform, &Scene::ShrinkPlatform));
+    powerup = new Powerup(name, top_left_corner, kPowerupSize, green, true);
+    effect = std::make_pair(&Scene::StretchPlatform, &Scene::ShrinkPlatform);
+  } else if (RandomPowerup()) {
+    powerup = new Powerup(name, top_left_corner, kPowerupSize, green, true);
+    effect = std::make_pair(&Scene::AddBottomWall, &Scene::RemoveBottomWall);
   } else {
-    powerups_.emplace_back(
-        new Powerup(name, top_left_corner, kPowerupSize, green, true),
-        std::make_pair(&Scene::AddBottomWall, &Scene::RemoveBottomWall));
+    powerup = new Powerup(name, top_left_corner, kPowerupSize, green, true);
+    effect = std::make_pair(&Scene::AddBall, &Scene::DoNothing);
   }
+
+  powerups_.emplace_back(powerup, effect);
 }
 
 void Scene::FrameStart() {
-  // clears the color buffer (using the previously set color) and depth buffer
+  // clears the color buffer (using the previously set color) and depth
+  // buffer
   glClearColor(0, 0, 0, 1);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -374,7 +379,10 @@ void Scene::OnMouseMove(int mouseX, int mouseY, int deltaX, int deltaY) {
 
 void Scene::OnMouseBtnPress(int mouseX, int mouseY, int button, int mods) {
   for (auto ball : balls_) {
-    ball->StartMoving();
+    if (!ball->IsMoving()) {
+      ball->StartMoving();
+      break;
+    }
   }
 }
 

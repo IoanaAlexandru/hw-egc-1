@@ -67,6 +67,17 @@ class Scene : public SimpleScene {
                             scene_width_, wall_thickness_, wall_color_));
   }
 
+  inline void AddBall() {
+    glm::vec3 ball_center = glm::vec3(
+        scene_width_ / 2, wall_thickness_ + platform_height_ + ball_radius_, 0);
+    std::string name = "ball-" + std::to_string(balls_.size());
+
+    balls_.push_back(
+        new Ball(name, ball_center, ball_radius_, ball_color_));
+  }
+
+  inline void DoNothing() {}
+
   inline void RemoveBottomWall() { walls_.erase(animatedmesh::DOWN); }
 
   // percentage of scene width reserved for brick panel
@@ -114,6 +125,7 @@ class Scene : public SimpleScene {
   int lives_ = kMaxLives;
 
   static const glm::vec3 wall_color_;
+  static const glm::vec3 ball_color_;
 };
 }  // namespace brickbreaker
 
