@@ -95,12 +95,11 @@ void Scene::InitPlatform() {
 void Scene::InitBall() {
   balls_.clear();
 
-  float ball_radius = platform_width_ * kBallToPlatformRatio / 2;
   glm::vec3 ball_center = glm::vec3(
-      scene_width_ / 2, wall_thickness_ + platform_height_ + ball_radius, 0);
+      scene_width_ / 2, wall_thickness_ + platform_height_ + ball_radius_, 0);
   glm::vec3 ball_color = glm::vec3(1, 1, 1);
 
-  balls_.push_back(new Ball("ball-0", ball_center, ball_radius, ball_color));
+  balls_.push_back(new Ball("ball-0", ball_center, ball_radius_, ball_color));
 }
 
 void Scene::Init() {
@@ -115,6 +114,9 @@ void Scene::Init() {
 
   distribution_ = std::bernoulli_distribution(kPowerupChance);
 
+  powerup_effects_.emplace_back(&Scene::ActivateShrinkPlatform,
+                                &Scene::DeactivateShrinkPlatform);
+
   scene_width_ = resolution.x;
   scene_height_ = resolution.y;
 
@@ -127,6 +129,7 @@ void Scene::Init() {
 
   platform_width_ = scene_width_ * kPlatformWidthRatio;
   platform_height_ = platform_width_ * kPlatformHeightToWidthRatio;
+  ball_radius_ = platform_width_ * kBallToPlatformRatio / 2;
 
   InitPauseButton();
   InitWalls();
@@ -137,8 +140,9 @@ void Scene::Init() {
 
 void Scene::SpawnPowerup(glm::vec3 top_left_corner) {
   std::string name = "powerup-" + std::to_string(powerups_.size());
-  powerups_.push_back(new Powerup(name, top_left_corner, kPowerupSize,
-                                  glm::vec3(0.96, 0.76, 0.05), true));
+  powerups_.emplace_back(new Powerup(name, top_left_corner, kPowerupSize,
+                                     glm::vec3(0.96, 0.76, 0.05), true),
+                         powerup_effects_[0]);
 }
 
 void Scene::FrameStart() {
@@ -294,10 +298,31 @@ void Scene::Update(float deltaTimeSeconds) {
     lives_ = kMaxLives;
   }
 
-  // Render powerups
-  for (auto powerup : powerups_) {
-    if (powerup->GetCenter().y < wall_thickness_ + platform_height_)
+  // Check powerup collisions
+  for (auto p = powerups_.begin(); p != powerups_.end();) {
+    auto powerup = (*p).first;
+    auto activate = (*p).second.first;
+    auto deactivate = (*p).second.second;
+    if (powerup->GetCenter().y < wall_thickness_ + platform_height_ &&
+        !powerup->IsActivated()) {
       powerup->OnPlatformHit(platform_->GetCenter(), platform_width_);
+      if (powerup->IsActivated()) {
+        std::cout << "ACTIVATE\n";
+         (this->*activate)();
+      }
+    }
+    if (powerup->IsActivated() && !powerup->IsActive()) {
+      std::cout << "DEACTIVATE\n";
+      p = powerups_.erase(p);
+       (this->*deactivate)();
+    } else {
+      p++;
+    }
+  }
+
+  // Render powerups
+  for (auto p : powerups_) {
+    auto powerup = p.first;
     powerup->Update(deltaTimeSeconds);
     RenderMesh2D(powerup, shaders["VertexColor"], powerup->GetModelMatrix());
   }

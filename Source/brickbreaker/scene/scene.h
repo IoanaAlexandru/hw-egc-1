@@ -49,7 +49,16 @@ class Scene : public SimpleScene {
   inline bool ShouldSpawnPowerup() { return distribution_(generator_); }
   void SpawnPowerup(glm::vec3 top_left_corner);
 
- protected:
+  inline void ActivateShrinkPlatform() {
+    platform_->ShrinkWidth();
+    platform_width_ = platform_->GetWidth();
+  }
+
+  inline void DeactivateShrinkPlatform() {
+    platform_->UnshrinkWidth();
+    platform_width_ = platform_->GetWidth();
+  }
+
   // percentage of scene width reserved for brick panel
   static const float kBrickPanelWidthRatio;
   // percentage of scene height reserved for brick panel
@@ -75,13 +84,19 @@ class Scene : public SimpleScene {
   std::map<animatedmesh::Position, Wall *> walls_;
   Platform *platform_;
   std::vector<Ball *> balls_;
-  std::vector<Powerup *> powerups_;
   PauseButton *pause_button_;
+
+  // First element is a powerup, second element is a pair of functions for
+  // activating/deactivating the powerup's effect
+  std::vector<std::pair<Powerup *, std::pair<void(Scene::*)(), void(Scene::*)()>>>
+      powerups_;
+  std::vector<std::pair<void(Scene::*)(), void(Scene::*)()>> powerup_effects_;
 
   float scene_width_, scene_height_;
   float wall_thickness_;
   float brick_width_, brick_height_;
   float platform_width_, platform_height_;
+  float ball_radius_;
 
   bool paused_ = false;
   int lives_ = kMaxLives;

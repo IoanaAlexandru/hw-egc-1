@@ -13,6 +13,7 @@ Powerup::~Powerup() {}
 
 void Powerup::Update(float delta_time_seconds) {
   if (is_shrinking_) {
+    lifespan_ -= delta_time_seconds;
     model_matrix_ *=
         animatedmesh::Translate(initial_center_.x, initial_center_.y);
     model_matrix_ *= animatedmesh::Scale(shrinking_speed_, shrinking_speed_);
