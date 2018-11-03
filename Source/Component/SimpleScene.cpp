@@ -58,33 +58,6 @@ void SimpleScene::InitResources()
 		simpleLine->SetDrawMode(GL_LINES);
 	}
 
-	// Create a shader program for drawing face polygon with the color of the normal
-	{
-		Shader *shader = new Shader("Simple");
-		shader->AddShader(RESOURCE_PATH::SHADERS + "MVP.Texture.VS.glsl", GL_VERTEX_SHADER);
-		shader->AddShader(RESOURCE_PATH::SHADERS + "Default.FS.glsl", GL_FRAGMENT_SHADER);
-		shader->CreateAndLink();
-		shaders[shader->GetName()] = shader;
-	}
-
-	// Create a shader program for drawing vertex colors
-	{
-		Shader *shader = new Shader("Color");
-		shader->AddShader(RESOURCE_PATH::SHADERS + "MVP.Texture.VS.glsl", GL_VERTEX_SHADER);
-		shader->AddShader(RESOURCE_PATH::SHADERS + "Color.FS.glsl", GL_FRAGMENT_SHADER);
-		shader->CreateAndLink();
-		shaders[shader->GetName()] = shader;
-	}
-
-	// Create a shader program for drawing face polygon with the color of the normal
-	{
-		Shader *shader = new Shader("VertexNormal");
-		shader->AddShader(RESOURCE_PATH::SHADERS + "MVP.Texture.VS.glsl", GL_VERTEX_SHADER);
-		shader->AddShader(RESOURCE_PATH::SHADERS + "Normals.FS.glsl", GL_FRAGMENT_SHADER);
-		shader->CreateAndLink();
-		shaders[shader->GetName()] = shader;
-	}
-
 	// Create a shader program for drawing vertex colors
 	{
 		Shader *shader = new Shader("VertexColor");

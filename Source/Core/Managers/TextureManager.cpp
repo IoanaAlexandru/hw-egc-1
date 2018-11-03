@@ -12,11 +12,6 @@ std::vector<Texture2D*> TextureManager::vTextures;
 void TextureManager::Init()
 {
 	LoadTexture(RESOURCE_PATH::TEXTURES, "default.png");
-	LoadTexture(RESOURCE_PATH::TEXTURES, "white.png");
-	LoadTexture(RESOURCE_PATH::TEXTURES, "black.jpg");
-	LoadTexture(RESOURCE_PATH::TEXTURES, "noise.png");
-	LoadTexture(RESOURCE_PATH::TEXTURES, "random.jpg");
-	LoadTexture(RESOURCE_PATH::TEXTURES, "particle.png");
 }
 
 //TextureManager::~TextureManager()
