@@ -109,8 +109,8 @@ void Scene::InitPlatform() {
 void Scene::InitBall() {
   balls_.clear();
 
-  glm::vec3 ball_center = glm::vec3(
-      scene_width_ / 2, wall_thickness_ + platform_height_ + ball_radius_, 0);
+  glm::vec3 ball_center = platform_->GetCenter() +
+                          glm::vec3(0, ball_radius_ + platform_height_ / 2, 0);
 
   balls_.push_back(new Ball("ball-0", ball_center, ball_radius_, ball_color_));
 }
@@ -380,21 +380,11 @@ void Scene::OnKeyRelease(int key, int mods) {
 }
 
 void Scene::OnMouseMove(int mouseX, int mouseY, int deltaX, int deltaY) {
-  float new_pos = (float)mouseX;
-
-  // Check left limit (platform stops at wall)
-  new_pos = std::max(platform_width_ / 2 + wall_thickness_, new_pos);
-  // Check right limit
-  new_pos =
-      std::min(scene_width_ - platform_width_ / 2 - wall_thickness_, new_pos);
-  // Take into account original position of platform
-  new_pos -= scene_width_ / 2;
-
-  platform_->Move(new_pos);
+  platform_->Move(deltaX);
   // If a ball is not moving (i.e., it is stuck to the platform), move it as
   // well, together with the platform.
   for (auto ball : balls_)
-    if (!ball->IsMoving()) ball->Move(new_pos);
+    if (!ball->IsMoving()) ball->Move(deltaX);
 }
 
 void Scene::OnMouseBtnPress(int mouseX, int mouseY, int button, int mods) {

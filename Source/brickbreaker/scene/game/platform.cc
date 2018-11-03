@@ -23,7 +23,7 @@ new_position > 0 => movement to the right
 new_position < 0 => movement to the left
 */
 void Platform::Move(float new_position) {
-  center_.x = initial_center_.x + new_position;
+  center_.x += new_position;
   model_matrix_ = animatedmesh::Translate(center_.x, center_.y);
   model_matrix_ *= scale_matrix_;
   model_matrix_ *=

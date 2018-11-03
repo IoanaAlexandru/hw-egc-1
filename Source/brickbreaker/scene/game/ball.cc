@@ -31,8 +31,9 @@ new_position > 0 => movement to the right
 new_position < 0 => movement to the left
 */
 void Ball::Move(float new_position) {
-  center_.x = initial_center_.x + new_position;
-  model_matrix_ = animatedmesh::Translate(new_position, 0);
+  center_.x += new_position;
+  model_matrix_ = animatedmesh::Translate(center_.x - initial_center_.x,
+                                          center_.y - initial_center_.y);
 }
 
 void Ball::OnHit(animatedmesh::Position obstacle_position) {

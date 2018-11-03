@@ -70,8 +70,8 @@ class Scene : public SimpleScene {
   }
 
   inline void AddBall() {
-    glm::vec3 ball_center = glm::vec3(
-        scene_width_ / 2, wall_thickness_ + platform_height_ + ball_radius_, 0);
+    glm::vec3 ball_center =
+        platform_->GetCenter() + glm::vec3(0, ball_radius_ + platform_height_ / 2, 0);
     std::string name = "ball-" + std::to_string(balls_.size());
 
     balls_.push_back(
