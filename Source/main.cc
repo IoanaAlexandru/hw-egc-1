@@ -15,10 +15,10 @@ int main(int argc, char **argv) {
   // Init the Engine and create a new window with the defined properties
   WindowObject *window = Engine::Init(wp);
 
-  // Create a new 3D world and start running it
-  World *world = new brickbreaker::Scene();
-  world->Init();
-  world->Run();
+  // Create game scene
+  World *scene = new brickbreaker::Scene();
+  scene->Init();
+  scene->Run();
 
   // Signals to the Engine to release the OpenGL context
   Engine::Exit();
