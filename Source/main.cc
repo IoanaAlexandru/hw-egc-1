@@ -9,6 +9,7 @@ int main(int argc, char **argv) {
 
   // Create a window property structure
   WindowProperties wp;
+  wp.name = "Brick Breaker";
   wp.resolution = glm::ivec2(1280, 720);
 
   // Init the Engine and create a new window with the defined properties
