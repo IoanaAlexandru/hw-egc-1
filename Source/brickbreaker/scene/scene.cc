@@ -234,52 +234,50 @@ bool Scene::CheckCollision(Ball *ball, Brick *brick) {
   glm::vec3 ball_center = ball->GetCenter();
   float ball_radius = ball->GetRadius();
 
-  if (!brick->IsShrinking()) {
-    glm::vec3 brick_center = brick->GetCenter();
-    float up = brick_center.y + brick_height_ / 2,
-          down = brick_center.y - brick_height_ / 2,
-          left = brick_center.x - brick_width_ / 2,
-          right = brick_center.x + brick_width_ / 2;
-    glm::vec3 centers_difference = brick_center - ball_center;
-    bool brick_is_solid = brick->IsSolid();
+  glm::vec3 brick_center = brick->GetCenter();
+  float up = brick_center.y + brick_height_ / 2,
+        down = brick_center.y - brick_height_ / 2,
+        left = brick_center.x - brick_width_ / 2,
+        right = brick_center.x + brick_width_ / 2;
+  glm::vec3 centers_difference = brick_center - ball_center;
+  bool brick_is_solid = brick->IsSolid();
 
-    if (abs(centers_difference.y) < brick_height_ / 2 + ball_radius &&
-        ball_center.x > left && ball_center.x < right) {
-      if (centers_difference.y > 0) {
-        brick->OnHit();
-        if (brick->IsShrinking() && ShouldSpawnPowerup())
-          SpawnPowerup(brick->GetCenter());
-        if (brick_is_solid) {
-          ball->OnHit(animatedmesh::UP);
-          return true;
-        }
-      } else {
-        brick->OnHit();
-        if (brick->IsShrinking() && ShouldSpawnPowerup())
-          SpawnPowerup(brick->GetCenter());
-        if (brick_is_solid) {
-          ball->OnHit(animatedmesh::DOWN);
-          return true;
-        }
+  if (abs(centers_difference.y) < brick_height_ / 2 + ball_radius &&
+      ball_center.x > left && ball_center.x < right) {
+    if (centers_difference.y > 0) {
+      brick->OnHit();
+      if (brick->IsShrinking() && ShouldSpawnPowerup())
+        SpawnPowerup(brick->GetCenter());
+      if (brick_is_solid) {
+        ball->OnHit(animatedmesh::UP);
+        return true;
       }
-    } else if (abs(centers_difference.x) < brick_width_ / 2 + ball_radius &&
-               ball_center.y < up && ball_center.y > down) {
-      if (centers_difference.x > 0) {
-        brick->OnHit();
-        if (brick->IsShrinking() && ShouldSpawnPowerup())
-          SpawnPowerup(brick->GetCenter());
-        if (brick_is_solid) {
-          ball->OnHit(animatedmesh::LEFT);
-          return true;
-        }
-      } else {
-        brick->OnHit();
-        if (brick->IsShrinking() && ShouldSpawnPowerup())
-          SpawnPowerup(brick->GetCenter());
-        if (brick_is_solid) {
-          ball->OnHit(animatedmesh::RIGHT);
-          return true;
-        }
+    } else {
+      brick->OnHit();
+      if (brick->IsShrinking() && ShouldSpawnPowerup())
+        SpawnPowerup(brick->GetCenter());
+      if (brick_is_solid) {
+        ball->OnHit(animatedmesh::DOWN);
+        return true;
+      }
+    }
+  } else if (abs(centers_difference.x) < brick_width_ / 2 + ball_radius &&
+             ball_center.y < up && ball_center.y > down) {
+    if (centers_difference.x > 0) {
+      brick->OnHit();
+      if (brick->IsShrinking() && ShouldSpawnPowerup())
+        SpawnPowerup(brick->GetCenter());
+      if (brick_is_solid) {
+        ball->OnHit(animatedmesh::LEFT);
+        return true;
+      }
+    } else {
+      brick->OnHit();
+      if (brick->IsShrinking() && ShouldSpawnPowerup())
+        SpawnPowerup(brick->GetCenter());
+      if (brick_is_solid) {
+        ball->OnHit(animatedmesh::RIGHT);
+        return true;
       }
     }
   }
@@ -387,10 +385,20 @@ void Scene::Update(float delta_time_seconds) {
     if (CheckCollision(ball, platform_)) continue;
 
     // Brick collisions
+    int remaining_bricks = 0;  // bricks that haven't shrunk
     for (auto brick_line : bricks_) {
       for (auto brick : brick_line) {
-        if (CheckCollision(ball, brick)) continue;
+        if (!brick->IsShrinking()) {
+          if (CheckCollision(ball, brick)) continue;
+          remaining_bricks++;
+        }
       }
+    }
+
+    // Reset brick panel if no more bricks are left
+    if (remaining_bricks == 0) {
+      InitBrickPanel();
+      return;
     }
   }
 
