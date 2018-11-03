@@ -13,9 +13,10 @@ const float Scene::kBrickPanelWidthRatio = 0.8f,
             Scene::kPlatformHeightToWidthRatio = 0.1f,
             Scene::kWallThicknessRatio = 0.01f,
             Scene::kBrickDistanceRatio = 0.15f,
-            Scene::kBallToPlatformRatio = 0.15f, Scene::kPauseButtonSize = 100.0f,
-            Scene::kPowerupSpawnChance = 0.2f, Scene::kPowerupChance = 0.3f,
-            Scene::kPowerupSize = 20.0f, Scene::kLifeSize = 30.0f;
+            Scene::kBallToPlatformRatio = 0.15f,
+            Scene::kPauseButtonSize = 100.0f, Scene::kPowerupSpawnChance = 0.2f,
+            Scene::kPowerupChance = 0.3f, Scene::kPowerupSize = 20.0f,
+            Scene::kLifeSize = 30.0f;
 const int Scene::kBricksPerRow = 15, Scene::kBrickRows = 8,
           Scene::kMaxLives = 3;
 const glm::vec3 Scene::wall_color_ = glm::vec3(0.7, 0.2, 0.2),
@@ -24,6 +25,8 @@ const glm::vec3 Scene::wall_color_ = glm::vec3(0.7, 0.2, 0.2),
 Scene::Scene() {}
 
 Scene::~Scene() {}
+
+#pragma region INITIALISATION UTILS
 
 void Scene::InitPauseButton() {
   glm::vec3 pause_button_corner =
@@ -115,6 +118,8 @@ void Scene::InitBall() {
   balls_.push_back(new Ball("ball-0", ball_center, ball_radius_, ball_color_));
 }
 
+#pragma endregion
+
 void Scene::Init() {
   glm::ivec2 resolution = window->GetResolution();
   auto camera = GetSceneCamera();
@@ -150,6 +155,140 @@ void Scene::Init() {
   InitBall();
 }
 
+void Scene::FrameStart() {
+  // clears the color buffer (using the previously set color) and depth
+  // buffer
+  glClearColor(0, 0, 0, 1);
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+  glm::ivec2 resolution = window->GetResolution();
+  // sets the screen area where to draw
+  glViewport(0, 0, resolution.x, resolution.y);
+}
+
+#pragma region COLLISION CHECKS
+
+bool Scene::CheckCollision(
+    Ball *ball, std::pair<const animatedmesh::Position, Wall *> wall) {
+  glm::vec3 ball_center = ball->GetCenter();
+  float ball_radius = ball->GetRadius();
+
+  switch (wall.first) {
+    case animatedmesh::UP:
+      if (ball_center.y > scene_height_ - wall_thickness_ - ball_radius) {
+        ball->OnHit(animatedmesh::UP);
+        return true;
+      }
+      break;
+    case animatedmesh::DOWN:
+      if (ball_center.y < wall_thickness_ + ball_radius) {
+        ball->OnHit(animatedmesh::DOWN);
+        return true;
+      }
+      break;
+    case animatedmesh::LEFT:
+      if (ball_center.x < wall_thickness_ + ball_radius) {
+        ball->OnHit(animatedmesh::LEFT);
+        return true;
+      }
+      break;
+    case animatedmesh::RIGHT:
+      if (ball_center.x > scene_width_ - wall_thickness_ - ball_radius) {
+        ball->OnHit(animatedmesh::RIGHT);
+        return true;
+      }
+      break;
+  }
+
+  return false;
+}
+
+bool Scene::CheckCollision(brickbreaker::Ball *ball, Platform *platform) {
+  if (ball->GetCenter().y <
+      wall_thickness_ + platform->GetHeight() + ball->GetRadius()) {
+    ball->OnPlatformHit(platform->GetCenter(), platform->GetWidth());
+    return true;
+  }
+
+  return false;
+}
+
+bool Scene::CheckCollision(
+    std::pair<Powerup *, std::pair<void (Scene::*)(), void (Scene::*)()>>
+        powerup_and_effect,
+    Platform *platform) {
+  auto powerup = powerup_and_effect.first;
+  auto activate = powerup_and_effect.second.first;
+
+  if (powerup->GetCenter().y < wall_thickness_ + platform->GetHeight() &&
+      !powerup->IsActivated()) {
+    powerup->OnPlatformHit(platform->GetCenter(), platform->GetWidth());
+    if (powerup->IsActivated()) (this->*activate)();
+    return true;
+  }
+
+  return false;
+}
+
+bool Scene::CheckCollision(Ball *ball, Brick *brick) {
+  glm::vec3 ball_center = ball->GetCenter();
+  float ball_radius = ball->GetRadius();
+
+  if (!brick->IsShrinking()) {
+    glm::vec3 brick_center = brick->GetCenter();
+    float up = brick_center.y + brick_height_ / 2,
+          down = brick_center.y - brick_height_ / 2,
+          left = brick_center.x - brick_width_ / 2,
+          right = brick_center.x + brick_width_ / 2;
+    glm::vec3 centers_difference = brick_center - ball_center;
+    bool brick_is_solid = brick->IsSolid();
+
+    if (abs(centers_difference.y) < brick_height_ / 2 + ball_radius &&
+        ball_center.x > left && ball_center.x < right) {
+      if (centers_difference.y > 0) {
+        brick->OnHit();
+        if (brick->IsShrinking() && ShouldSpawnPowerup())
+          SpawnPowerup(brick->GetCenter());
+        if (brick_is_solid) {
+          ball->OnHit(animatedmesh::UP);
+          return true;
+        }
+      } else {
+        brick->OnHit();
+        if (brick->IsShrinking() && ShouldSpawnPowerup())
+          SpawnPowerup(brick->GetCenter());
+        if (brick_is_solid) {
+          ball->OnHit(animatedmesh::DOWN);
+          return true;
+        }
+      }
+    } else if (abs(centers_difference.x) < brick_width_ / 2 + ball_radius &&
+               ball_center.y < up && ball_center.y > down) {
+      if (centers_difference.x > 0) {
+        brick->OnHit();
+        if (brick->IsShrinking() && ShouldSpawnPowerup())
+          SpawnPowerup(brick->GetCenter());
+        if (brick_is_solid) {
+          ball->OnHit(animatedmesh::LEFT);
+          return true;
+        }
+      } else {
+        brick->OnHit();
+        if (brick->IsShrinking() && ShouldSpawnPowerup())
+          SpawnPowerup(brick->GetCenter());
+        if (brick_is_solid) {
+          ball->OnHit(animatedmesh::RIGHT);
+          return true;
+        }
+      }
+    }
+  }
+
+  return false;
+}
+
+#pragma endregion
+
 void Scene::SpawnPowerup(glm::vec3 top_left_corner) {
   glm::vec3 yellow = glm::vec3(0.96, 0.76, 0.05);
   glm::vec3 red = glm::vec3(0.86, 0.20, 0.21);
@@ -157,7 +296,7 @@ void Scene::SpawnPowerup(glm::vec3 top_left_corner) {
 
   Powerup *powerup;
   std::pair<void (Scene::*)(), void (Scene::*)()> effect;
-  std::string name = "powerup-" + std::to_string(powerups_.size());
+  std::string name = "powerup-" + std::to_string(powerups_and_effects_.size());
 
   if (RandomPowerup()) {
     powerup = new Powerup(name, top_left_corner, kPowerupSize, red);
@@ -173,32 +312,23 @@ void Scene::SpawnPowerup(glm::vec3 top_left_corner) {
     effect = std::make_pair(&Scene::AddBall, &Scene::DoNothing);
   }
 
-  powerups_.emplace_back(powerup, effect);
-}
-
-void Scene::FrameStart() {
-  // clears the color buffer (using the previously set color) and depth
-  // buffer
-  glClearColor(0, 0, 0, 1);
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-  glm::ivec2 resolution = window->GetResolution();
-  // sets the screen area where to draw
-  glViewport(0, 0, resolution.x, resolution.y);
+  powerups_and_effects_.emplace_back(powerup, effect);
 }
 
 void Scene::Update(float delta_time_seconds) {
+  // Only render the pause button if the game is paused
   if (paused_) {
     RenderMesh2D(pause_button_, shaders["VertexColor"], glm::mat3(1));
     return;
   }
 
+  // Update and render lives
   for (auto life : lives_) {
     life->Update(delta_time_seconds);
     RenderMesh2D(life, shaders["VertexColor"], life->GetModelMatrix());
   }
 
-  // Render bricks
+  // Update and render bricks
   for (auto brick_line : bricks_) {
     for (auto brick : brick_line) {
       brick->Update(delta_time_seconds);
@@ -215,96 +345,51 @@ void Scene::Update(float delta_time_seconds) {
   platform_->Update(delta_time_seconds);
   RenderMesh2D(platform_, shaders["VertexColor"], platform_->GetModelMatrix());
 
-  // Check ball(s) collisions
+  // Check powerup collisions
+  for (auto p : powerups_and_effects_) {
+    CheckCollision(p, platform_);
+  }
+
+  // Remove/deactivate fallen and expired powerups
+  for (auto p = powerups_and_effects_.begin();
+       p != powerups_and_effects_.end();) {
+    auto powerup = (*p).first;
+    auto deactivate = (*p).second.second;
+
+    if (powerup->GetCenter().y < wall_thickness_ + platform_height_ &&
+        !powerup->IsActivated()) {
+      // powerup fell
+      p = powerups_and_effects_.erase(p);
+    } else if (powerup->IsActivated() && !powerup->IsActive()) {
+      // powerup expired
+      (this->*deactivate)();
+      p = powerups_and_effects_.erase(p);
+    } else {
+      p++;
+    }
+  }
+
+  // Render powerups
+  for (auto p : powerups_and_effects_) {
+    auto powerup = p.first;
+    powerup->Update(delta_time_seconds);
+    RenderMesh2D(powerup, shaders["VertexColor"], powerup->GetModelMatrix());
+  }
+
+  // Check ball collisions
   for (auto ball : balls_) {
-    glm::vec3 ball_center = ball->GetCenter();
-    float ball_radius = ball->GetRadius();
-
-    // Check wall collisions
+    // Wall collisions
     for (auto wall : walls_) {
-      switch (wall.first) {
-        case animatedmesh::UP:
-          if (ball_center.y > scene_height_ - wall_thickness_ - ball_radius) {
-            ball->OnHit(animatedmesh::UP);
-          }
-          break;
-        case animatedmesh::DOWN:
-          if (ball_center.y < wall_thickness_ + ball_radius) {
-            ball->OnHit(animatedmesh::DOWN);
-          }
-          break;
-        case animatedmesh::LEFT:
-          if (ball_center.x < wall_thickness_ + ball_radius) {
-            ball->OnHit(animatedmesh::LEFT);
-          }
-          break;
-        case animatedmesh::RIGHT:
-          if (ball_center.x > scene_width_ - wall_thickness_ - ball_radius) {
-            ball->OnHit(animatedmesh::RIGHT);
-          }
-          break;
-      }
+      if (CheckCollision(ball, wall)) continue;
     }
 
-    // Check platform collisions
-    if (ball_center.y < wall_thickness_ + platform_height_ + ball_radius) {
-      ball->OnPlatformHit(platform_->GetCenter(), platform_width_);
-      continue;
-    }
+    // Platform collisions
+    if (CheckCollision(ball, platform_)) continue;
 
-    // Check brick collisions
+    // Brick collisions
     for (auto brick_line : bricks_) {
       for (auto brick : brick_line) {
-        if (!brick->IsShrinking()) {
-          glm::vec3 brick_center = brick->GetCenter();
-          float up = brick_center.y + brick_height_ / 2,
-                down = brick_center.y - brick_height_ / 2,
-                left = brick_center.x - brick_width_ / 2,
-                right = brick_center.x + brick_width_ / 2;
-          glm::vec3 centers_difference = brick_center - ball_center;
-          bool brick_is_solid = brick->IsSolid();
-
-          if (abs(centers_difference.y) < brick_height_ / 2 + ball_radius &&
-              ball_center.x > left && ball_center.x < right) {
-            if (centers_difference.y > 0) {
-              brick->OnHit();
-              if (brick->IsShrinking() && ShouldSpawnPowerup())
-                SpawnPowerup(brick->GetCenter());
-              if (brick_is_solid) {
-                ball->OnHit(animatedmesh::UP);
-                continue;
-              }
-            } else {
-              brick->OnHit();
-              if (brick->IsShrinking() && ShouldSpawnPowerup())
-                SpawnPowerup(brick->GetCenter());
-              if (brick_is_solid) {
-                ball->OnHit(animatedmesh::DOWN);
-                continue;
-              }
-            }
-          } else if (abs(centers_difference.x) <
-                         brick_width_ / 2 + ball_radius &&
-                     ball_center.y < up && ball_center.y > down) {
-            if (centers_difference.x > 0) {
-              brick->OnHit();
-              if (brick->IsShrinking() && ShouldSpawnPowerup())
-                SpawnPowerup(brick->GetCenter());
-              if (brick_is_solid) {
-                ball->OnHit(animatedmesh::LEFT);
-                continue;
-              }
-            } else {
-              brick->OnHit();
-              if (brick->IsShrinking() && ShouldSpawnPowerup())
-                SpawnPowerup(brick->GetCenter());
-              if (brick_is_solid) {
-                ball->OnHit(animatedmesh::RIGHT);
-                continue;
-              }
-            }
-          }
-        }
+        if (CheckCollision(ball, brick)) continue;
       }
     }
   }
@@ -316,7 +401,7 @@ void Scene::Update(float delta_time_seconds) {
     else
       ball++;
 
-  // Render ball(s)
+  // Render balls
   for (auto ball : balls_) {
     ball->Update(delta_time_seconds);
     RenderMesh2D(ball, shaders["VertexColor"], ball->GetModelMatrix());
@@ -333,36 +418,7 @@ void Scene::Update(float delta_time_seconds) {
   if (lives_.empty()) {
     InitBrickPanel();
     InitLives();
-    powerups_.clear();
-  }
-
-  // Check powerup collisions
-  for (auto p = powerups_.begin(); p != powerups_.end();) {
-    auto powerup = (*p).first;
-    auto activate = (*p).second.first;
-    auto deactivate = (*p).second.second;
-    if (powerup->GetCenter().y < wall_thickness_ + platform_height_ &&
-        !powerup->IsActivated()) {
-      powerup->OnPlatformHit(platform_->GetCenter(), platform_width_);
-      if (powerup->IsActivated()) {
-        (this->*activate)();
-        p++;
-      } else {
-        p = powerups_.erase(p);  // powerup fell
-      }
-    } else if (powerup->IsActivated() && !powerup->IsActive()) {
-      p = powerups_.erase(p);
-      (this->*deactivate)();
-    } else {
-      p++;
-    }
-  }
-
-  // Render powerups
-  for (auto p : powerups_) {
-    auto powerup = p.first;
-    powerup->Update(delta_time_seconds);
-    RenderMesh2D(powerup, shaders["VertexColor"], powerup->GetModelMatrix());
+    powerups_and_effects_.clear();
   }
 }
 
@@ -384,7 +440,8 @@ void Scene::OnMouseMove(int mouse_x, int mouse_y, int delta_x, int delta_y) {
 
   // Don't go past right wall
   if (platform_->GetCenter().x >
-      scene_width_ - platform_width_ / 2 - wall_thickness_ && delta_x > 0)
+          scene_width_ - platform_width_ / 2 - wall_thickness_ &&
+      delta_x > 0)
     return;
 
   platform_->Move((float)delta_x);

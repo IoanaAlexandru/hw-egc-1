@@ -58,6 +58,17 @@ class Scene : public SimpleScene {
   inline bool RandomPowerup() { return powerup_chance_(random_); }
   void SpawnPowerup(glm::vec3 top_left_corner);
 
+  // COLLISIONS
+  bool CheckCollision(
+      Ball *ball,
+      std::pair<const animatedmesh::Position, brickbreaker::Wall *> wall);
+  bool CheckCollision(Ball *ball, Platform *platform);
+  bool CheckCollision(
+      std::pair<Powerup *, std::pair<void (Scene::*)(), void (Scene::*)()>>
+          powerup_and_effect,
+      Platform *platform);
+  bool CheckCollision(Ball *ball, Brick *brick);
+
   // POWERUP EFFECTS
   inline void ShrinkPlatform() {
     platform_->ShrinkWidth();
@@ -120,12 +131,11 @@ class Scene : public SimpleScene {
   std::vector<Ball *> balls_;
   std::vector<Life *> lives_;
   PauseButton *pause_button_;
-
   // First element is a powerup, second element is a pair of functions for
   // activating/deactivating the powerup's effect
   std::vector<
       std::pair<Powerup *, std::pair<void (Scene::*)(), void (Scene::*)()>>>
-      powerups_;
+      powerups_and_effects_;
 
   // ELEMENT PROPERTIES
   float scene_width_, scene_height_;
