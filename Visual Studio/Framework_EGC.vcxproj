@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Source\brickbreaker\generic\circle.cc" />
+    <ClCompile Include="..\Source\brickbreaker\generic\heart.cc" />
     <ClCompile Include="..\Source\brickbreaker\generic\rectangle.cc" />
     <ClCompile Include="..\Source\brickbreaker\scene\game\ball.cc" />
     <ClCompile Include="..\Source\brickbreaker\scene\game\brick.cc" />
@@ -27,6 +28,7 @@
     <ClCompile Include="..\Source\brickbreaker\scene\game\powerup.cpp" />
     <ClCompile Include="..\Source\brickbreaker\scene\game\wall.cc" />
     <ClCompile Include="..\Source\brickbreaker\scene\scene.cc" />
+    <ClCompile Include="..\Source\brickbreaker\scene\ui\life.cc" />
     <ClCompile Include="..\Source\brickbreaker\scene\ui\pausebutton.cpp" />
     <ClCompile Include="..\Source\Component\CameraInput.cpp" />
     <ClCompile Include="..\Source\Component\SceneInput.cpp" />
@@ -47,6 +49,7 @@
   <ItemGroup>
     <ClInclude Include="..\Source\brickbreaker\generic\animatedmesh.h" />
     <ClInclude Include="..\Source\brickbreaker\generic\circle.h" />
+    <ClInclude Include="..\Source\brickbreaker\generic\heart.h" />
     <ClInclude Include="..\Source\brickbreaker\generic\rectangle.h" />
     <ClInclude Include="..\Source\brickbreaker\generic\transform2d.h" />
     <ClInclude Include="..\Source\brickbreaker\scene\game\ball.h" />
@@ -55,6 +58,7 @@
     <ClInclude Include="..\Source\brickbreaker\scene\game\powerup.h" />
     <ClInclude Include="..\Source\brickbreaker\scene\game\wall.h" />
     <ClInclude Include="..\Source\brickbreaker\scene\scene.h" />
+    <ClInclude Include="..\Source\brickbreaker\scene\ui\life.h" />
     <ClInclude Include="..\Source\brickbreaker\scene\ui\pausebutton.h" />
     <ClInclude Include="..\Source\Component\CameraInput.h" />
     <ClInclude Include="..\Source\Component\SceneInput.h" />

@@ -2,10 +2,10 @@
 #define BRICKBREAKER_SCENE_LIFE_H_
 
 #pragma once
-#include "brickbreaker/generic/circle.h"
+#include "brickbreaker/generic/heart.h"
 
 namespace brickbreaker {
-class Life : public animatedmesh::Circle {
+class Life : public animatedmesh::Heart {
  public:
   // Create circle (life) with given center, radius and color
   Life(std::string name, glm::vec3 center, float radius, glm::vec3 color);

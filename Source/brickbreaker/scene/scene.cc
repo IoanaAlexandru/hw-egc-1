@@ -15,7 +15,7 @@ const float Scene::kBrickPanelWidthRatio = 0.8,
             Scene::kBrickDistanceRatio = 0.15,
             Scene::kBallToPlatformRatio = 0.15, Scene::kPauseButtonSize = 100,
             Scene::kPowerupSpawnChance = 0.2, Scene::kPowerupChance = 0.3,
-            Scene::kPowerupSize = 20, Scene::kLifeSize = 10;
+            Scene::kPowerupSize = 20, Scene::kLifeSize = 30;
 const int Scene::kBricksPerRow = 15, Scene::kBrickRows = 8,
           Scene::kMaxLives = 3;
 const glm::vec3 Scene::wall_color_ = glm::vec3(0.7, 0.2, 0.2),
@@ -36,12 +36,12 @@ void Scene::InitPauseButton() {
 void Scene::InitLives() {
   lives_.clear();
 
-  glm::vec3 center = glm::vec3(kLifeSize * 2.5, kLifeSize * 1.5, 0);
+  glm::vec3 center = glm::vec3(kLifeSize * 1.5, kLifeSize, 0);
 
   for (int i = 0; i < kMaxLives; i++) {
     std::string name = "life-" + std::to_string(i);
     lives_.push_back(new Life(name, center, kLifeSize, glm::vec3(1, 1, 1)));
-    center += glm::vec3(kLifeSize * 2.5, 0, 0);
+    center += glm::vec3(kLifeSize * 1.5, 0, 0);
   }
 }
 
