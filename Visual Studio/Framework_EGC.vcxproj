@@ -22,6 +22,7 @@
     <ClCompile Include="..\Source\brickbreaker\generic\circle.cc" />
     <ClCompile Include="..\Source\brickbreaker\generic\heart.cc" />
     <ClCompile Include="..\Source\brickbreaker\generic\rectangle.cc" />
+    <ClCompile Include="..\Source\brickbreaker\generic\star.cc" />
     <ClCompile Include="..\Source\brickbreaker\scene\game\ball.cc" />
     <ClCompile Include="..\Source\brickbreaker\scene\game\brick.cc" />
     <ClCompile Include="..\Source\brickbreaker\scene\game\platform.cc" />
@@ -51,6 +52,7 @@
     <ClInclude Include="..\Source\brickbreaker\generic\circle.h" />
     <ClInclude Include="..\Source\brickbreaker\generic\heart.h" />
     <ClInclude Include="..\Source\brickbreaker\generic\rectangle.h" />
+    <ClInclude Include="..\Source\brickbreaker\generic\star.h" />
     <ClInclude Include="..\Source\brickbreaker\generic\transform2d.h" />
     <ClInclude Include="..\Source\brickbreaker\scene\game\ball.h" />
     <ClInclude Include="..\Source\brickbreaker\scene\game\brick.h" />

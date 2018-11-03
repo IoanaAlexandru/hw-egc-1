@@ -112,6 +112,9 @@
     <ClCompile Include="..\Source\brickbreaker\scene\ui\life.cc">
       <Filter>brickbreaker\scene\ui</Filter>
     </ClCompile>
+    <ClCompile Include="..\Source\brickbreaker\generic\star.cc">
+      <Filter>brickbreaker\generic</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source\Core\World.h">
@@ -206,6 +209,9 @@
     </ClInclude>
     <ClInclude Include="..\Source\brickbreaker\scene\ui\life.h">
       <Filter>brickbreaker\scene\ui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\brickbreaker\generic\star.h">
+      <Filter>brickbreaker\generic</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

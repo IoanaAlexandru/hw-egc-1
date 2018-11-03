@@ -5,9 +5,9 @@
 #include "brickbreaker/generic/transform2d.h"
 
 namespace brickbreaker {
-Powerup::Powerup(std::string name, glm::vec3 top_left_corner, float length,
-                 glm::vec3 color, bool fill)
-    : Rectangle(name, top_left_corner, length, length, color, fill) {}
+Powerup::Powerup(std::string name, glm::vec3 center, float length,
+                 glm::vec3 color)
+    : Star(name, center, length, color) {}
 
 Powerup::~Powerup() {}
 

@@ -160,16 +160,16 @@ void Scene::SpawnPowerup(glm::vec3 top_left_corner) {
   std::string name = "powerup-" + std::to_string(powerups_.size());
 
   if (RandomPowerup()) {
-    powerup = new Powerup(name, top_left_corner, kPowerupSize, red, true);
+    powerup = new Powerup(name, top_left_corner, kPowerupSize, red);
     effect = std::make_pair(&Scene::ShrinkPlatform, &Scene::StretchPlatform);
   } else if (RandomPowerup()) {
-    powerup = new Powerup(name, top_left_corner, kPowerupSize, green, true);
+    powerup = new Powerup(name, top_left_corner, kPowerupSize, green);
     effect = std::make_pair(&Scene::StretchPlatform, &Scene::ShrinkPlatform);
   } else if (RandomPowerup()) {
-    powerup = new Powerup(name, top_left_corner, kPowerupSize, green, true);
+    powerup = new Powerup(name, top_left_corner, kPowerupSize, green);
     effect = std::make_pair(&Scene::AddBottomWall, &Scene::RemoveBottomWall);
   } else {
-    powerup = new Powerup(name, top_left_corner, kPowerupSize, green, true);
+    powerup = new Powerup(name, top_left_corner, kPowerupSize, green);
     effect = std::make_pair(&Scene::AddBall, &Scene::DoNothing);
   }
 
