@@ -103,9 +103,6 @@
     <ClCompile Include="..\Source\brickbreaker\scene\game\wall.cc">
       <Filter>brickbreaker\scene\game</Filter>
     </ClCompile>
-    <ClCompile Include="..\Source\brickbreaker\scene\ui\pausebutton.cpp">
-      <Filter>brickbreaker\scene\ui</Filter>
-    </ClCompile>
     <ClCompile Include="..\Source\brickbreaker\generic\heart.cc">
       <Filter>brickbreaker\generic</Filter>
     </ClCompile>
@@ -114,6 +111,9 @@
     </ClCompile>
     <ClCompile Include="..\Source\brickbreaker\generic\star.cc">
       <Filter>brickbreaker\generic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\brickbreaker\scene\ui\pausebutton.cc">
+      <Filter>brickbreaker\scene\ui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

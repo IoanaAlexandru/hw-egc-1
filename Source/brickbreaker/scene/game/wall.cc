@@ -4,7 +4,7 @@
 
 namespace brickbreaker {
 Wall::Wall(std::string name, animatedmesh::Position position,
-           float window_height, float window_width, float thickness,
+           float scene_height, float scene_width, float thickness,
            glm::vec3 color)
     : Mesh(name) {
   thickness_ = thickness;
@@ -14,28 +14,28 @@ Wall::Wall(std::string name, animatedmesh::Position position,
 
   switch (position) {
     case animatedmesh::UP:
-      vertex1 = glm::vec3(0, window_height - thickness, 0);
-      vertex2 = glm::vec3(0, window_height, 0);
-      vertex3 = glm::vec3(window_width, window_height, 0);
-      vertex4 = glm::vec3(window_width, window_height - thickness, 0);
+      vertex1 = glm::vec3(0, scene_height - thickness, 0);
+      vertex2 = glm::vec3(0, scene_height, 0);
+      vertex3 = glm::vec3(scene_width, scene_height, 0);
+      vertex4 = glm::vec3(scene_width, scene_height - thickness, 0);
       break;
     case animatedmesh::DOWN:
       vertex1 = glm::vec3(0, 0, 0);
       vertex2 = glm::vec3(0, thickness, 0);
-      vertex3 = glm::vec3(window_width, thickness, 0);
-      vertex4 = glm::vec3(window_width, 0, 0);
+      vertex3 = glm::vec3(scene_width, thickness, 0);
+      vertex4 = glm::vec3(scene_width, 0, 0);
       break;
     case animatedmesh::LEFT:
       vertex1 = glm::vec3(0, 0, 0);
-      vertex2 = glm::vec3(0, window_height, 0);
-      vertex3 = glm::vec3(thickness, window_height, 0);
+      vertex2 = glm::vec3(0, scene_height, 0);
+      vertex3 = glm::vec3(thickness, scene_height, 0);
       vertex4 = glm::vec3(thickness, 0, 0);
       break;
     case animatedmesh::RIGHT:
-      vertex1 = glm::vec3(window_width - thickness, 0, 0);
-      vertex2 = glm::vec3(window_width - thickness, window_height, 0);
-      vertex3 = glm::vec3(window_width, window_height, 0);
-      vertex4 = glm::vec3(window_width, 0, 0);
+      vertex1 = glm::vec3(scene_width - thickness, 0, 0);
+      vertex2 = glm::vec3(scene_width - thickness, scene_height, 0);
+      vertex3 = glm::vec3(scene_width, scene_height, 0);
+      vertex4 = glm::vec3(scene_width, 0, 0);
       break;
   }
 

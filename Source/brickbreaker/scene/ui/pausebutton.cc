@@ -19,10 +19,7 @@ PauseButton::PauseButton(std::string name, glm::vec3 top_left_corner,
       VertexFormat(corner + glm::vec3(length, -length, 0), color),
       VertexFormat(corner + glm::vec3(length / 3 * 2, -length, 0), color)};
 
-  std::vector<unsigned short> indices = {0, 1, 2,
-                                         3, 0, 2,
-                                         4, 5, 6,
-                                         7, 4, 6};
+  std::vector<unsigned short> indices = {0, 1, 2, 3, 0, 2, 4, 5, 6, 7, 4, 6};
 
   InitFromData(vertices, indices);
 }

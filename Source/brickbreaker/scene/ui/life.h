@@ -7,8 +7,8 @@
 namespace brickbreaker {
 class Life : public animatedmesh::Heart {
  public:
-  // Create circle (life) with given center, radius and color
-  Life(std::string name, glm::vec3 center, float radius, glm::vec3 color);
+  // Create heart (life) with given center, width and color
+  Life(std::string name, glm::vec3 center, float width, glm::vec3 color);
   ~Life();
 
   void Update(float delta_time_seconds);

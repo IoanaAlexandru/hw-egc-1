@@ -30,7 +30,7 @@
     <ClCompile Include="..\Source\brickbreaker\scene\game\wall.cc" />
     <ClCompile Include="..\Source\brickbreaker\scene\scene.cc" />
     <ClCompile Include="..\Source\brickbreaker\scene\ui\life.cc" />
-    <ClCompile Include="..\Source\brickbreaker\scene\ui\pausebutton.cpp" />
+    <ClCompile Include="..\Source\brickbreaker\scene\ui\pausebutton.cc" />
     <ClCompile Include="..\Source\Component\CameraInput.cpp" />
     <ClCompile Include="..\Source\Component\SceneInput.cpp" />
     <ClCompile Include="..\Source\Component\SimpleScene.cpp" />

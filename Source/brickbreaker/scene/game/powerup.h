@@ -17,7 +17,7 @@ class Powerup : public animatedmesh::Star {
   // Default lifespan of powerup, in seconds
   double kDefaultLifespan = 10;
 
-  // Create square (powerup) with given position, size and color
+  // Create star (powerup) with given position, size and color
   Powerup(std::string name, glm::vec3 center, float length, glm::vec3 color);
   ~Powerup();
 

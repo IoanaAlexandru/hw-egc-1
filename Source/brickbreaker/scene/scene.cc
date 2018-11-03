@@ -36,7 +36,7 @@ void Scene::InitPauseButton() {
 void Scene::InitLives() {
   lives_.clear();
 
-  glm::vec3 center = glm::vec3(kLifeSize * 1.5, kLifeSize, 0);
+  glm::vec3 center = glm::vec3(kLifeSize * 1.2, kLifeSize * 0.9, 0);
 
   for (int i = 0; i < kMaxLives; i++) {
     std::string name = "life-" + std::to_string(i);
@@ -187,21 +187,21 @@ void Scene::FrameStart() {
   glViewport(0, 0, resolution.x, resolution.y);
 }
 
-void Scene::Update(float deltaTimeSeconds) {
+void Scene::Update(float delta_time_seconds) {
   if (paused_) {
     RenderMesh2D(pause_button_, shaders["VertexColor"], glm::mat3(1));
     return;
   }
 
   for (auto life : lives_) {
-    life->Update(deltaTimeSeconds);
+    life->Update(delta_time_seconds);
     RenderMesh2D(life, shaders["VertexColor"], life->GetModelMatrix());
   }
 
   // Render bricks
   for (auto brick_line : bricks_) {
     for (auto brick : brick_line) {
-      brick->Update(deltaTimeSeconds);
+      brick->Update(delta_time_seconds);
       RenderMesh2D(brick, shaders["VertexColor"], brick->GetModelMatrix());
     }
   }
@@ -212,7 +212,7 @@ void Scene::Update(float deltaTimeSeconds) {
   }
 
   // Render platform
-  platform_->Update(deltaTimeSeconds);
+  platform_->Update(delta_time_seconds);
   RenderMesh2D(platform_, shaders["VertexColor"], platform_->GetModelMatrix());
 
   // Check ball(s) collisions
@@ -318,23 +318,22 @@ void Scene::Update(float deltaTimeSeconds) {
 
   // Render ball(s)
   for (auto ball : balls_) {
-    ball->Update(deltaTimeSeconds);
+    ball->Update(delta_time_seconds);
     RenderMesh2D(ball, shaders["VertexColor"], ball->GetModelMatrix());
   }
 
-  // If no balls are left, subtract a life and reset platform + ball
+  // If no balls are left, remove a life and reset platform + ball
   if (balls_.size() == 0) {
-    lives_count_--;
     lives_.pop_back();
     InitPlatform();
     InitBall();
   }
 
-  // If no lives are left, reset brick panel and lives count
-  if (lives_count_ <= 0) {
+  // If no lives are left, reset the game
+  if (lives_.empty()) {
     InitBrickPanel();
     InitLives();
-    lives_count_ = kMaxLives;
+    powerups_.clear();
   }
 
   // Check powerup collisions
@@ -362,32 +361,30 @@ void Scene::Update(float deltaTimeSeconds) {
   // Render powerups
   for (auto p : powerups_) {
     auto powerup = p.first;
-    powerup->Update(deltaTimeSeconds);
+    powerup->Update(delta_time_seconds);
     RenderMesh2D(powerup, shaders["VertexColor"], powerup->GetModelMatrix());
   }
 }
 
 void Scene::FrameEnd() {}
 
-void Scene::OnInputUpdate(float deltaTime, int mods) {}
+void Scene::OnInputUpdate(float delta_time, int mods) {}
 
 void Scene::OnKeyPress(int key, int mods) {
   if (key == GLFW_KEY_P) paused_ = !paused_;
 }
 
-void Scene::OnKeyRelease(int key, int mods) {
-  // add key release event
-}
+void Scene::OnKeyRelease(int key, int mods) {}
 
-void Scene::OnMouseMove(int mouseX, int mouseY, int deltaX, int deltaY) {
-  platform_->Move(deltaX);
+void Scene::OnMouseMove(int mouse_x, int mouse_y, int delta_x, int delta_y) {
+  platform_->Move(delta_x);
   // If a ball is not moving (i.e., it is stuck to the platform), move it as
   // well, together with the platform.
   for (auto ball : balls_)
-    if (!ball->IsMoving()) ball->Move(deltaX);
+    if (!ball->IsMoving()) ball->Move(delta_x);
 }
 
-void Scene::OnMouseBtnPress(int mouseX, int mouseY, int button, int mods) {
+void Scene::OnMouseBtnPress(int mouse_x, int mouse_y, int button, int mods) {
   for (auto ball : balls_) {
     if (!ball->IsMoving()) {
       ball->StartMoving();
@@ -396,11 +393,10 @@ void Scene::OnMouseBtnPress(int mouseX, int mouseY, int button, int mods) {
   }
 }
 
-void Scene::OnMouseBtnRelease(int mouseX, int mouseY, int button, int mods) {
-  // add mouse button release event
-}
+void Scene::OnMouseBtnRelease(int mouse_x, int mouse_y, int button, int mods) {}
 
-void Scene::OnMouseScroll(int mouseX, int mouseY, int offsetX, int offsetY) {}
+void Scene::OnMouseScroll(int mouse_x, int mouse_y, int offset_x,
+                          int offset_y) {}
 
 void Scene::OnWindowResize(int width, int height) {}
 }  // namespace brickbreaker

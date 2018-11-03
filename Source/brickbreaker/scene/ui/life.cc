@@ -6,8 +6,7 @@
 
 namespace brickbreaker {
 Life::Life(std::string name, glm::vec3 center, float width, glm::vec3 color)
-    : Heart(name, center, width, color) {
-}
+    : Heart(name, center, width, color) {}
 
 Life::~Life() {}
 

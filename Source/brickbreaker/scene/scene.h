@@ -26,19 +26,23 @@ class Scene : public SimpleScene {
   void Init() override;
 
  private:
+  // INHERITED METHODS
   void FrameStart() override;
-  void Update(float deltaTimeSeconds) override;
+  void Update(float delta_time_seconds) override;
   void FrameEnd() override;
 
-  void OnInputUpdate(float deltaTime, int mods) override;
+  void OnInputUpdate(float delta_time, int mods) override;
   void OnKeyPress(int key, int mods) override;
   void OnKeyRelease(int key, int mods) override;
-  void OnMouseMove(int mouseX, int mouseY, int deltaX, int deltaY) override;
-  void OnMouseBtnPress(int mouseX, int mouseY, int button, int mods) override;
-  void OnMouseBtnRelease(int mouseX, int mouseY, int button, int mods) override;
-  void OnMouseScroll(int mouseX, int mouseY, int offsetX, int offsetY) override;
+  void OnMouseMove(int mouse_x, int mouse_y, int delta_x, int delta_y) override;
+  void OnMouseBtnPress(int mouse_x, int mouse_y, int button, int mods) override;
+  void OnMouseBtnRelease(int mouse_x, int mouse_y, int button,
+                         int mods) override;
+  void OnMouseScroll(int mouse_x, int mouse_y, int offset_x,
+                     int offset_y) override;
   void OnWindowResize(int width, int height) override;
 
+  // INITIALIZATION
   void InitPauseButton();
   void InitLives();
   void InitWalls();
@@ -46,6 +50,7 @@ class Scene : public SimpleScene {
   void InitPlatform();
   void InitBall();
 
+  // RANDOMIZATION
   std::default_random_engine random_;
   std::bernoulli_distribution powerup_chance_;
   std::bernoulli_distribution powerup_spawn_chance_;
@@ -53,6 +58,7 @@ class Scene : public SimpleScene {
   inline bool RandomPowerup() { return powerup_chance_(random_); }
   void SpawnPowerup(glm::vec3 top_left_corner);
 
+  // POWERUP EFFECTS
   inline void ShrinkPlatform() {
     platform_->ShrinkWidth();
     platform_width_ = platform_->GetWidth();
@@ -69,19 +75,20 @@ class Scene : public SimpleScene {
                             scene_width_, wall_thickness_, wall_color_));
   }
 
+  inline void RemoveBottomWall() { walls_.erase(animatedmesh::DOWN); }
+
   inline void AddBall() {
     glm::vec3 ball_center =
-        platform_->GetCenter() + glm::vec3(0, ball_radius_ + platform_height_ / 2, 0);
+        platform_->GetCenter() +
+        glm::vec3(0, ball_radius_ + platform_height_ / 2, 0);
     std::string name = "ball-" + std::to_string(balls_.size());
 
-    balls_.push_back(
-        new Ball(name, ball_center, ball_radius_, ball_color_));
+    balls_.push_back(new Ball(name, ball_center, ball_radius_, ball_color_));
   }
 
   inline void DoNothing() {}
 
-  inline void RemoveBottomWall() { walls_.erase(animatedmesh::DOWN); }
-
+  // CONSTANTS
   // percentage of scene width reserved for brick panel
   static const float kBrickPanelWidthRatio;
   // percentage of scene height reserved for brick panel
@@ -106,6 +113,7 @@ class Scene : public SimpleScene {
   static const float kPowerupSize;
   static const float kLifeSize;
 
+  // SCENE ELEMENTS
   std::vector<std::vector<Brick *>> bricks_;
   std::map<animatedmesh::Position, Wall *> walls_;
   Platform *platform_;
@@ -119,15 +127,17 @@ class Scene : public SimpleScene {
       std::pair<Powerup *, std::pair<void (Scene::*)(), void (Scene::*)()>>>
       powerups_;
 
+  // ELEMENT PROPERTIES
   float scene_width_, scene_height_;
   float wall_thickness_;
   float brick_width_, brick_height_;
   float platform_width_, platform_height_;
   float ball_radius_;
 
+  // SCENE PROPERTIES
   bool paused_ = false;
-  int lives_count_ = kMaxLives;
 
+  // COLORS
   static const glm::vec3 wall_color_;
   static const glm::vec3 ball_color_;
 };
