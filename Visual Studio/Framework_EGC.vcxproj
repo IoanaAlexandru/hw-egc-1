@@ -54,6 +54,7 @@
     <ClInclude Include="..\Source\brickbreaker\generic\rectangle.h" />
     <ClInclude Include="..\Source\brickbreaker\generic\star.h" />
     <ClInclude Include="..\Source\brickbreaker\generic\transform2d.h" />
+    <ClInclude Include="..\Source\brickbreaker\scene\colors.h" />
     <ClInclude Include="..\Source\brickbreaker\scene\game\ball.h" />
     <ClInclude Include="..\Source\brickbreaker\scene\game\brick.h" />
     <ClInclude Include="..\Source\brickbreaker\scene\game\platform.h" />

@@ -4,6 +4,8 @@
 #pragma once
 #include "Core/GPU/Mesh.h"
 
+#include "brickbreaker/scene/colors.h"
+
 namespace brickbreaker {
 class PauseButton : public Mesh {
  public:

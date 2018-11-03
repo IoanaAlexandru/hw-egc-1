@@ -6,7 +6,7 @@ namespace brickbreaker {
 PauseButton::PauseButton(std::string name, glm::vec3 top_left_corner,
                          float length)
     : Mesh(name) {
-  glm::vec3 color = glm::vec3(1, 1, 1);
+  glm::vec3 color = kWhite;
   glm::vec3 corner = top_left_corner;
 
   std::vector<VertexFormat> vertices = {

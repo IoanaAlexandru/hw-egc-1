@@ -123,6 +123,7 @@ class Scene : public SimpleScene {
   static const float kPowerupChance;
   static const float kPowerupSize;
   static const float kLifeSize;
+  static const float kLifeSpaceSize;
 
   // SCENE ELEMENTS
   std::vector<std::vector<Brick *>> bricks_;
@@ -148,8 +149,11 @@ class Scene : public SimpleScene {
   bool paused_ = false;
 
   // COLORS
-  static const glm::vec3 wall_color_;
-  static const glm::vec3 ball_color_;
+  glm::vec3 wall_color_ = glm::vec3(0.7, 0.2, 0.2);
+  glm::vec3 ball_color_ = kWhite;
+  glm::vec3 life_color_ = kRed;
+  glm::vec3 brick_color_ = glm::vec3(0.7, 0.2, 0.2);
+  glm::vec3 platform_color_ = glm::vec3(0.9, 0.4, 0.4);
 };
 }  // namespace brickbreaker
 

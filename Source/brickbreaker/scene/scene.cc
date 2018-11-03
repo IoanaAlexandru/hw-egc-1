@@ -16,11 +16,10 @@ const float Scene::kBrickPanelWidthRatio = 0.8f,
             Scene::kBallToPlatformRatio = 0.15f,
             Scene::kPauseButtonSize = 100.0f, Scene::kPowerupSpawnChance = 0.2f,
             Scene::kPowerupChance = 0.3f, Scene::kPowerupSize = 20.0f,
-            Scene::kLifeSize = 30.0f;
+            Scene::kLifeSize = 30.0f, Scene::kLifeSpaceSize = 10.0f;
+
 const int Scene::kBricksPerRow = 15, Scene::kBrickRows = 8,
           Scene::kMaxLives = 3;
-const glm::vec3 Scene::wall_color_ = glm::vec3(0.7, 0.2, 0.2),
-                Scene::ball_color_ = glm::vec3(1, 1, 1);
 
 Scene::Scene() {}
 
@@ -39,12 +38,14 @@ void Scene::InitPauseButton() {
 void Scene::InitLives() {
   lives_.clear();
 
-  glm::vec3 center = glm::vec3(kLifeSize * 1.2, kLifeSize * 0.9, 0);
+  glm::vec3 center =
+      glm::vec3(kLifeSize / 2 + kLifeSpaceSize + wall_thickness_,
+                kLifeSize / 2 + kLifeSpaceSize + wall_thickness_, 0);
 
   for (int i = 0; i < kMaxLives; i++) {
     std::string name = "life-" + std::to_string(i);
-    lives_.push_back(new Life(name, center, kLifeSize, glm::vec3(1, 1, 1)));
-    center += glm::vec3(kLifeSize * 1.5, 0, 0);
+    lives_.push_back(new Life(name, center, kLifeSize, life_color_));
+    center += glm::vec3(kLifeSize + kLifeSpaceSize, 0, 0);
   }
 }
 
@@ -83,7 +84,6 @@ void Scene::InitBrickPanel() {
   // Top left corner of first brick at the top left of the brick panel
   glm::vec3 brick_corner = glm::vec3(x_offset, y_offset, 0);
 
-  glm::vec3 brick_color = glm::vec3(0.7, 0.2, 0.2);
   bool fill = true;
 
   for (auto i = 0; i < kBrickRows; i++) {
@@ -91,7 +91,7 @@ void Scene::InitBrickPanel() {
     for (auto j = 0; j < kBricksPerRow; j++) {
       std::string name = "brick-" + std::to_string(i) + "-" + std::to_string(j);
       brick_line.push_back(new Brick(name, brick_corner, brick_height_,
-                                     brick_width_, brick_color, fill));
+                                     brick_width_, brick_color_, fill));
       brick_corner += glm::vec3(brick_width_ + brick_distance_x, 0, 0);
     }
     bricks_.push_back(brick_line);
@@ -101,12 +101,11 @@ void Scene::InitBrickPanel() {
 }
 
 void Scene::InitPlatform() {
-  glm::vec3 platform_color = glm::vec3(0.9, 0.4, 0.4);
   glm::vec3 platform_corner = glm::vec3((scene_width_ - platform_width_) / 2,
                                         wall_thickness_ + platform_height_, 0);
 
   platform_ = new Platform("platform", platform_corner, platform_height_,
-                           platform_width_, platform_color, true);
+                           platform_width_, platform_color_, true);
 }
 
 void Scene::InitBall() {
@@ -288,25 +287,21 @@ bool Scene::CheckCollision(Ball *ball, Brick *brick) {
 #pragma endregion
 
 void Scene::SpawnPowerup(glm::vec3 top_left_corner) {
-  glm::vec3 yellow = glm::vec3(0.96, 0.76, 0.05);
-  glm::vec3 red = glm::vec3(0.86, 0.20, 0.21);
-  glm::vec3 green = glm::vec3(0.24, 0.73, 0.33);
-
   Powerup *powerup;
   std::pair<void (Scene::*)(), void (Scene::*)()> effect;
   std::string name = "powerup-" + std::to_string(powerups_and_effects_.size());
 
   if (RandomPowerup()) {
-    powerup = new Powerup(name, top_left_corner, kPowerupSize, red);
+    powerup = new Powerup(name, top_left_corner, kPowerupSize, kRed);
     effect = std::make_pair(&Scene::ShrinkPlatform, &Scene::StretchPlatform);
   } else if (RandomPowerup()) {
-    powerup = new Powerup(name, top_left_corner, kPowerupSize, green);
+    powerup = new Powerup(name, top_left_corner, kPowerupSize, kGreen);
     effect = std::make_pair(&Scene::StretchPlatform, &Scene::ShrinkPlatform);
   } else if (RandomPowerup()) {
-    powerup = new Powerup(name, top_left_corner, kPowerupSize, green);
+    powerup = new Powerup(name, top_left_corner, kPowerupSize, kGreen);
     effect = std::make_pair(&Scene::AddBottomWall, &Scene::RemoveBottomWall);
   } else {
-    powerup = new Powerup(name, top_left_corner, kPowerupSize, green);
+    powerup = new Powerup(name, top_left_corner, kPowerupSize, kGreen);
     effect = std::make_pair(&Scene::AddBall, &Scene::DoNothing);
   }
 

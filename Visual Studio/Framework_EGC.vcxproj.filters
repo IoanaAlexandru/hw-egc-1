@@ -213,6 +213,9 @@
     <ClInclude Include="..\Source\brickbreaker\generic\star.h">
       <Filter>brickbreaker\generic</Filter>
     </ClInclude>
+    <ClInclude Include="..\Source\brickbreaker\scene\colors.h">
+      <Filter>brickbreaker\scene</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />
