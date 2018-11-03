@@ -9,12 +9,12 @@
 
 #include "Component/SimpleScene.h"
 #include "Core/Engine.h"
-#include "brickbreaker/scene/ball.h"
-#include "brickbreaker/scene/brick.h"
-#include "brickbreaker/scene/pausebutton.h"
-#include "brickbreaker/scene/platform.h"
-#include "brickbreaker/scene/powerup.h"
-#include "brickbreaker/scene/wall.h"
+#include "brickbreaker/scene/game/ball.h"
+#include "brickbreaker/scene/game/brick.h"
+#include "brickbreaker/scene/game/platform.h"
+#include "brickbreaker/scene/game/powerup.h"
+#include "brickbreaker/scene/game/wall.h"
+#include "brickbreaker/scene/ui/pausebutton.h"
 
 namespace brickbreaker {
 class Scene : public SimpleScene {

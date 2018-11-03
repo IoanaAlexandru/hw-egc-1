@@ -1,4 +1,4 @@
-#include "brickbreaker/scene/brick.h"
+#include "brickbreaker/scene/game/brick.h"
 #include "brickbreaker/generic/transform2d.h"
 
 namespace brickbreaker {

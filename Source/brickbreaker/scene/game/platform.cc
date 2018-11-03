@@ -1,4 +1,4 @@
-#include "brickbreaker/scene/platform.h"
+#include "brickbreaker/scene/game/platform.h"
 
 #include "brickbreaker/generic/transform2d.h"
 

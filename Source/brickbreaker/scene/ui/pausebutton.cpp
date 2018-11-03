@@ -1,4 +1,4 @@
-#include "brickbreaker/scene/pausebutton.h"
+#include "brickbreaker/scene/ui/pausebutton.h"
 
 #include "Core/Engine.h"
 

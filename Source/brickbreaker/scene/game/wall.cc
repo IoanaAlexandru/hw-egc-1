@@ -1,4 +1,4 @@
-#include "brickbreaker/scene/wall.h"
+#include "brickbreaker/scene/game/wall.h"
 
 #include "Core/Engine.h"
 

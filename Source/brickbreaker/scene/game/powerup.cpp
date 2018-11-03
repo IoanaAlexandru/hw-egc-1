@@ -1,4 +1,4 @@
-#include "brickbreaker/scene/powerup.h"
+#include "brickbreaker/scene/game/powerup.h"
 
 #include <iostream>
 

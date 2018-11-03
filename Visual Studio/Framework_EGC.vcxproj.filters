@@ -28,6 +28,12 @@
     <Filter Include="brickbreaker\scene">
       <UniqueIdentifier>{e748ebee-72db-4c0f-8664-5f0cd0d6680d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="brickbreaker\scene\game">
+      <UniqueIdentifier>{17a08f7f-5c7a-466e-8794-4db51986d6b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="brickbreaker\scene\ui">
+      <UniqueIdentifier>{2f596a34-a3ef-4a35-bbd9-ed0e30f56f05}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Source\Core\Engine.cpp">
@@ -78,27 +84,27 @@
     <ClCompile Include="..\Source\brickbreaker\generic\rectangle.cc">
       <Filter>brickbreaker\generic</Filter>
     </ClCompile>
-    <ClCompile Include="..\Source\brickbreaker\scene\ball.cc">
-      <Filter>brickbreaker\scene</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Source\brickbreaker\scene\brick.cc">
-      <Filter>brickbreaker\scene</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Source\brickbreaker\scene\platform.cc">
-      <Filter>brickbreaker\scene</Filter>
-    </ClCompile>
     <ClCompile Include="..\Source\brickbreaker\scene\scene.cc">
       <Filter>brickbreaker\scene</Filter>
     </ClCompile>
-    <ClCompile Include="..\Source\brickbreaker\scene\wall.cc">
-      <Filter>brickbreaker\scene</Filter>
-    </ClCompile>
     <ClCompile Include="..\Source\main.cc" />
-    <ClCompile Include="..\Source\brickbreaker\scene\pausebutton.cpp">
-      <Filter>brickbreaker\scene</Filter>
+    <ClCompile Include="..\Source\brickbreaker\scene\game\ball.cc">
+      <Filter>brickbreaker\scene\game</Filter>
     </ClCompile>
-    <ClCompile Include="..\Source\brickbreaker\scene\powerup.cpp">
-      <Filter>brickbreaker\scene</Filter>
+    <ClCompile Include="..\Source\brickbreaker\scene\game\brick.cc">
+      <Filter>brickbreaker\scene\game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\brickbreaker\scene\game\platform.cc">
+      <Filter>brickbreaker\scene\game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\brickbreaker\scene\game\powerup.cpp">
+      <Filter>brickbreaker\scene\game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\brickbreaker\scene\game\wall.cc">
+      <Filter>brickbreaker\scene\game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\brickbreaker\scene\ui\pausebutton.cpp">
+      <Filter>brickbreaker\scene\ui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -168,26 +174,26 @@
     <ClInclude Include="..\Source\brickbreaker\generic\transform2d.h">
       <Filter>brickbreaker\generic</Filter>
     </ClInclude>
-    <ClInclude Include="..\Source\brickbreaker\scene\ball.h">
-      <Filter>brickbreaker\scene</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Source\brickbreaker\scene\brick.h">
-      <Filter>brickbreaker\scene</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Source\brickbreaker\scene\platform.h">
-      <Filter>brickbreaker\scene</Filter>
-    </ClInclude>
     <ClInclude Include="..\Source\brickbreaker\scene\scene.h">
       <Filter>brickbreaker\scene</Filter>
     </ClInclude>
-    <ClInclude Include="..\Source\brickbreaker\scene\wall.h">
-      <Filter>brickbreaker\scene</Filter>
+    <ClInclude Include="..\Source\brickbreaker\scene\game\ball.h">
+      <Filter>brickbreaker\scene\game</Filter>
     </ClInclude>
-    <ClInclude Include="..\Source\brickbreaker\scene\pausebutton.h">
-      <Filter>brickbreaker\scene</Filter>
+    <ClInclude Include="..\Source\brickbreaker\scene\game\brick.h">
+      <Filter>brickbreaker\scene\game</Filter>
     </ClInclude>
-    <ClInclude Include="..\Source\brickbreaker\scene\powerup.h">
-      <Filter>brickbreaker\scene</Filter>
+    <ClInclude Include="..\Source\brickbreaker\scene\game\platform.h">
+      <Filter>brickbreaker\scene\game</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\brickbreaker\scene\game\powerup.h">
+      <Filter>brickbreaker\scene\game</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\brickbreaker\scene\game\wall.h">
+      <Filter>brickbreaker\scene\game</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\brickbreaker\scene\ui\pausebutton.h">
+      <Filter>brickbreaker\scene\ui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

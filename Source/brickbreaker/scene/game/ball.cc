@@ -1,4 +1,4 @@
-#include "brickbreaker/scene/ball.h"
+#include "brickbreaker/scene/game/ball.h"
 
 #include <iostream>
 
