@@ -9,7 +9,7 @@ class Brick : public animatedmesh::Rectangle {
  public:
   // Default shrinking speed: number between 0 and 1, where a higher value
   // represents a slower shrinking speed (0 is instant, 1 doesn't shrink)
-  double kDefaultShrinkingSpeed = 0.8;
+  float kDefaultShrinkingSpeed = 0.8f;
 
   // Create rectangle (brick) with given top left corner, size, color and fill
   Brick(std::string name, glm::vec3 top_left_corner, float height, float width,

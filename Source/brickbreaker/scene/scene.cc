@@ -7,15 +7,15 @@
 #include "brickbreaker/generic/transform2d.h"
 
 namespace brickbreaker {
-const float Scene::kBrickPanelWidthRatio = 0.8,
-            Scene::kBrickPanelHeightRatio = 0.5,
-            Scene::kPlatformWidthRatio = 0.15,
-            Scene::kPlatformHeightToWidthRatio = 0.1,
-            Scene::kWallThicknessRatio = 0.01,
-            Scene::kBrickDistanceRatio = 0.15,
-            Scene::kBallToPlatformRatio = 0.15, Scene::kPauseButtonSize = 100,
-            Scene::kPowerupSpawnChance = 0.2, Scene::kPowerupChance = 0.3,
-            Scene::kPowerupSize = 20, Scene::kLifeSize = 30;
+const float Scene::kBrickPanelWidthRatio = 0.8f,
+            Scene::kBrickPanelHeightRatio = 0.5f,
+            Scene::kPlatformWidthRatio = 0.15f,
+            Scene::kPlatformHeightToWidthRatio = 0.1f,
+            Scene::kWallThicknessRatio = 0.01f,
+            Scene::kBrickDistanceRatio = 0.15f,
+            Scene::kBallToPlatformRatio = 0.15f, Scene::kPauseButtonSize = 100.0f,
+            Scene::kPowerupSpawnChance = 0.2f, Scene::kPowerupChance = 0.3f,
+            Scene::kPowerupSize = 20.0f, Scene::kLifeSize = 30.0f;
 const int Scene::kBricksPerRow = 15, Scene::kBrickRows = 8,
           Scene::kMaxLives = 3;
 const glm::vec3 Scene::wall_color_ = glm::vec3(0.7, 0.2, 0.2),
@@ -128,8 +128,8 @@ void Scene::Init() {
   powerup_spawn_chance_ = std::bernoulli_distribution(kPowerupSpawnChance);
   powerup_chance_ = std::bernoulli_distribution(kPowerupChance);
 
-  scene_width_ = resolution.x;
-  scene_height_ = resolution.y;
+  scene_width_ = (float)resolution.x;
+  scene_height_ = (float)resolution.y;
 
   wall_thickness_ = std::min(scene_width_, scene_height_) * kWallThicknessRatio;
 
@@ -387,11 +387,11 @@ void Scene::OnMouseMove(int mouse_x, int mouse_y, int delta_x, int delta_y) {
       scene_width_ - platform_width_ / 2 - wall_thickness_ && delta_x > 0)
     return;
 
-  platform_->Move(delta_x);
+  platform_->Move((float)delta_x);
   // If a ball is not moving (i.e., it is stuck to the platform), move it as
   // well, together with the platform.
   for (auto ball : balls_)
-    if (!ball->IsMoving()) ball->Move(delta_x);
+    if (!ball->IsMoving()) ball->Move((float)delta_x);
 }
 
 void Scene::OnMouseBtnPress(int mouse_x, int mouse_y, int button, int mods) {

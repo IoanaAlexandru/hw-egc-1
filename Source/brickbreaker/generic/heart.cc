@@ -24,17 +24,17 @@ Heart::Heart(std::string name, glm::vec3 center, float width, glm::vec3 color)
     y = radius * sin(theta);
     vertices.push_back(
         VertexFormat(glm::vec3(x, y, 0) + left_semicircle_center, color));
-    theta += 0.1;
+    theta += 0.1f;
   }
 
-  for (int i = left_semicircle_center_index + 1; i < vertices.size() - 1; i++) {
+  for (auto i = left_semicircle_center_index + 1; i < (int)vertices.size() - 1; i++) {
     indices.push_back(left_semicircle_center_index);
     indices.push_back(i);
     indices.push_back(i + 1);
   }
 
   // Right semicircle
-  int right_semicircle_center_index = vertices.size();
+  int right_semicircle_center_index = (int)vertices.size();
   glm::vec3 right_semicircle_center = center + glm::vec3(radius, 0, 0);
   vertices.push_back(VertexFormat(right_semicircle_center, color));
 
@@ -44,10 +44,10 @@ Heart::Heart(std::string name, glm::vec3 center, float width, glm::vec3 color)
     y = radius * sin(theta);
     vertices.push_back(
         VertexFormat(glm::vec3(x, y, 0) + right_semicircle_center, color));
-    theta += 0.1;
+    theta += 0.1f;
   }
 
-  for (int i = right_semicircle_center_index + 1; i < vertices.size() - 1;
+  for (auto i = right_semicircle_center_index + 1; i < (int)vertices.size() - 1;
        i++) {
     indices.push_back(right_semicircle_center_index);
     indices.push_back(i);
@@ -55,7 +55,7 @@ Heart::Heart(std::string name, glm::vec3 center, float width, glm::vec3 color)
   }
 
   // Bottom triangle
-  int next_index = vertices.size();
+  int next_index = (int)vertices.size();
   glm::vec3 middle_left = center + glm::vec3(-width / 2, 0, 0);
   vertices.push_back(VertexFormat(middle_left, color));
   glm::vec3 middle_bottom = center + glm::vec3(0, -width / 2, 0);

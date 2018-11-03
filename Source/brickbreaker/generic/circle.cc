@@ -21,7 +21,7 @@ Circle::Circle(std::string name, glm::vec3 center, float radius,
     x = radius_ * cos(theta);
     y = radius_ * sin(theta);
     vertices.push_back(VertexFormat(glm::vec3(x, y, 0) + center, color));
-    theta += 0.1;
+    theta += 0.1f;
   }
 
   for (int i = 1; i < vertices.size() - 1; i++) {
