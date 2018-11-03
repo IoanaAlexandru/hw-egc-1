@@ -14,6 +14,7 @@
 #include "brickbreaker/scene/game/platform.h"
 #include "brickbreaker/scene/game/powerup.h"
 #include "brickbreaker/scene/game/wall.h"
+#include "brickbreaker/scene/ui/life.h"
 #include "brickbreaker/scene/ui/pausebutton.h"
 
 namespace brickbreaker {
@@ -39,6 +40,7 @@ class Scene : public SimpleScene {
   void OnWindowResize(int width, int height) override;
 
   void InitPauseButton();
+  void InitLives();
   void InitWalls();
   void InitBrickPanel();
   void InitPlatform();
@@ -102,11 +104,13 @@ class Scene : public SimpleScene {
   // chance for a certain type of powerup to spawn
   static const float kPowerupChance;
   static const float kPowerupSize;
+  static const float kLifeSize;
 
   std::vector<std::vector<Brick *>> bricks_;
   std::map<animatedmesh::Position, Wall *> walls_;
   Platform *platform_;
   std::vector<Ball *> balls_;
+  std::vector<Life *> lives_;
   PauseButton *pause_button_;
 
   // First element is a powerup, second element is a pair of functions for
@@ -122,7 +126,7 @@ class Scene : public SimpleScene {
   float ball_radius_;
 
   bool paused_ = false;
-  int lives_ = kMaxLives;
+  int lives_count_ = kMaxLives;
 
   static const glm::vec3 wall_color_;
   static const glm::vec3 ball_color_;

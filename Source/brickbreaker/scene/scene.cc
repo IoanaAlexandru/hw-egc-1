@@ -15,7 +15,7 @@ const float Scene::kBrickPanelWidthRatio = 0.8,
             Scene::kBrickDistanceRatio = 0.15,
             Scene::kBallToPlatformRatio = 0.15, Scene::kPauseButtonSize = 100,
             Scene::kPowerupSpawnChance = 0.2, Scene::kPowerupChance = 0.3,
-            Scene::kPowerupSize = 20;
+            Scene::kPowerupSize = 20, Scene::kLifeSize = 10;
 const int Scene::kBricksPerRow = 15, Scene::kBrickRows = 8,
           Scene::kMaxLives = 3;
 const glm::vec3 Scene::wall_color_ = glm::vec3(0.7, 0.2, 0.2),
@@ -31,6 +31,18 @@ void Scene::InitPauseButton() {
                 scene_height_ / 2 + kPauseButtonSize / 2, 0);
   pause_button_ =
       new PauseButton("pausebutton", pause_button_corner, kPauseButtonSize);
+}
+
+void Scene::InitLives() {
+  lives_.clear();
+
+  glm::vec3 center = glm::vec3(kLifeSize * 2.5, kLifeSize * 1.5, 0);
+
+  for (int i = 0; i < kMaxLives; i++) {
+    std::string name = "life-" + std::to_string(i);
+    lives_.push_back(new Life(name, center, kLifeSize, glm::vec3(1, 1, 1)));
+    center += glm::vec3(kLifeSize * 2.5, 0, 0);
+  }
 }
 
 void Scene::InitWalls() {
@@ -59,8 +71,8 @@ void Scene::InitBrickPanel() {
       (scene_height_ * kBrickPanelHeightRatio - kBrickRows * brick_height_) /
       (kBrickRows - 1);
 
-  // There is a row of free space between the brick panel and the upper wall, of
-  // height equal to the brick height
+  // There is a row of free space between the brick panel and the upper wall,
+  // of height equal to the brick height
   float x_offset = scene_width_ * (1 - kBrickPanelWidthRatio) / 2;
   // The brick panel is centered
   float y_offset = scene_height_ - (wall_thickness_ + brick_height_);
@@ -130,6 +142,7 @@ void Scene::Init() {
   platform_height_ = platform_width_ * kPlatformHeightToWidthRatio;
   ball_radius_ = platform_width_ * kBallToPlatformRatio / 2;
 
+  InitLives();
   InitPauseButton();
   InitWalls();
   InitBrickPanel();
@@ -178,6 +191,11 @@ void Scene::Update(float deltaTimeSeconds) {
   if (paused_) {
     RenderMesh2D(pause_button_, shaders["VertexColor"], glm::mat3(1));
     return;
+  }
+
+  for (auto life : lives_) {
+    life->Update(deltaTimeSeconds);
+    RenderMesh2D(life, shaders["VertexColor"], life->GetModelMatrix());
   }
 
   // Render bricks
@@ -306,15 +324,17 @@ void Scene::Update(float deltaTimeSeconds) {
 
   // If no balls are left, subtract a life and reset platform + ball
   if (balls_.size() == 0) {
-    lives_--;
+    lives_count_--;
+    lives_.pop_back();
     InitPlatform();
     InitBall();
   }
 
   // If no lives are left, reset brick panel and lives count
-  if (lives_ <= 0) {
+  if (lives_count_ <= 0) {
     InitBrickPanel();
-    lives_ = kMaxLives;
+    InitLives();
+    lives_count_ = kMaxLives;
   }
 
   // Check powerup collisions
