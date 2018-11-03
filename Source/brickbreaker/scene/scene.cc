@@ -377,6 +377,16 @@ void Scene::OnKeyPress(int key, int mods) {
 void Scene::OnKeyRelease(int key, int mods) {}
 
 void Scene::OnMouseMove(int mouse_x, int mouse_y, int delta_x, int delta_y) {
+  // Don't go past left wall
+  if (platform_->GetCenter().x < platform_width_ / 2 + wall_thickness_ &&
+      delta_x < 0)
+    return;
+
+  // Don't go past right wall
+  if (platform_->GetCenter().x >
+      scene_width_ - platform_width_ / 2 - wall_thickness_ && delta_x > 0)
+    return;
+
   platform_->Move(delta_x);
   // If a ball is not moving (i.e., it is stuck to the platform), move it as
   // well, together with the platform.
