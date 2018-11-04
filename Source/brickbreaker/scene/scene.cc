@@ -310,10 +310,16 @@ void Scene::SpawnPowerup(glm::vec3 top_left_corner) {
     powerup = new Powerup(name, top_left_corner, kPowerupSize, kGreen);
     effect = std::make_pair(&Scene::StretchPlatform, &Scene::ShrinkPlatform);
   } else if (RandomPowerup()) {
-    powerup = new Powerup(name, top_left_corner, kPowerupSize, kGreen);
+    powerup = new Powerup(name, top_left_corner, kPowerupSize, wall_color_);
     effect = std::make_pair(&Scene::AddBottomWall, &Scene::RemoveBottomWall);
+  } else if (RandomPowerup()) {
+    powerup = new Powerup(name, top_left_corner, kPowerupSize, kBlue);
+    effect = std::make_pair(&Scene::SpeedUpBalls, &Scene::SpeedDownBalls);
+  } else if (RandomPowerup()) {
+    powerup = new Powerup(name, top_left_corner, kPowerupSize, kYellow);
+    effect = std::make_pair(&Scene::SpeedDownBalls, &Scene::SpeedUpBalls);
   } else {
-    powerup = new Powerup(name, top_left_corner, kPowerupSize, kGreen);
+    powerup = new Powerup(name, top_left_corner, kPowerupSize, ball_color_);
     effect = std::make_pair(&Scene::AddBall, &Scene::DoNothing);
   }
 

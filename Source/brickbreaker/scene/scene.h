@@ -121,6 +121,16 @@ class Scene : public SimpleScene {
 
   inline void DoNothing() {}
 
+  // Speed up all balls
+  inline void SpeedUpBalls() {
+    for (auto ball : balls_) ball->SpeedUp();
+  }
+
+  // Speed down all balls
+  inline void SpeedDownBalls() {
+    for (auto ball : balls_) ball->SpeedDown();
+  }
+
   // CONSTANTS
 
   // percentage of scene width reserved for brick panel
