@@ -69,7 +69,5 @@ void Ball::OnPlatformHit(glm::vec3 platform_center, float platform_size, bool st
 
   movement_x_ = movement_speed_ * cos(reflect_angle);
   movement_y_ = movement_speed_ * sin(reflect_angle);
-
-  Update(0.1);
 }
 }  // namespace brickbreaker

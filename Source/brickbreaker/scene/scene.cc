@@ -359,6 +359,19 @@ void Scene::Update(float delta_time_seconds) {
   platform_->Update(delta_time_seconds);
   RenderMesh2D(platform_, shaders["VertexColor"], platform_->GetModelMatrix());
 
+  // Render powerups
+  for (auto p : powerups_and_effects_) {
+    auto powerup = p.first;
+    powerup->Update(delta_time_seconds);
+    RenderMesh2D(powerup, shaders["VertexColor"], powerup->GetModelMatrix());
+  }
+
+  // Render balls
+  for (auto ball : balls_) {
+    ball->Update(delta_time_seconds);
+    RenderMesh2D(ball, shaders["VertexColor"], ball->GetModelMatrix());
+  }
+
   // Check powerup collisions
   for (auto p : powerups_and_effects_) {
     CheckCollision(p, platform_);
@@ -381,13 +394,6 @@ void Scene::Update(float delta_time_seconds) {
     } else {
       p++;
     }
-  }
-
-  // Render powerups
-  for (auto p : powerups_and_effects_) {
-    auto powerup = p.first;
-    powerup->Update(delta_time_seconds);
-    RenderMesh2D(powerup, shaders["VertexColor"], powerup->GetModelMatrix());
   }
 
   // Check ball collisions
@@ -436,12 +442,6 @@ void Scene::Update(float delta_time_seconds) {
       ball = balls_.erase(ball);
     else
       ball++;
-
-  // Render balls
-  for (auto ball : balls_) {
-    ball->Update(delta_time_seconds);
-    RenderMesh2D(ball, shaders["VertexColor"], ball->GetModelMatrix());
-  }
 
   // If no balls are left, remove a life and reset platform + ball
   if (balls_.size() == 0) {
