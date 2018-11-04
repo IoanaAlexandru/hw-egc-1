@@ -172,10 +172,14 @@ bool Scene::CheckCollision(
     Ball *ball, std::pair<const animatedmesh::Position, Wall *> wall) {
   glm::vec3 ball_center = ball->GetCenter();
   float ball_radius = ball->GetRadius();
+  // Value indicating how much into the wall the ball is; used to prevent the
+  // case when the platform would push the ball so far into the lateral wall
+  // it would get stuck there
+  float penetration;
 
   switch (wall.first) {
     case animatedmesh::UP:
-      if (ball_center.y > scene_height_ - wall_thickness_ - ball_radius) {
+      if (ball_center.y >= scene_height_ - wall_thickness_ - ball_radius) {
         ball->OnHit(animatedmesh::UP);
         return true;
       }
@@ -187,13 +191,18 @@ bool Scene::CheckCollision(
       }
       break;
     case animatedmesh::LEFT:
-      if (ball_center.x < wall_thickness_ + ball_radius) {
+      penetration = ball_center.x - (wall_thickness_ + ball_radius);
+      if (penetration <= 0) {
+        ball->Move(-penetration);
         ball->OnHit(animatedmesh::LEFT);
         return true;
       }
       break;
     case animatedmesh::RIGHT:
-      if (ball_center.x > scene_width_ - wall_thickness_ - ball_radius) {
+      penetration =
+          ball_center.x - (scene_width_ - wall_thickness_ - ball_radius);
+      if (penetration >= 0) {
+        ball->Move(-penetration);
         ball->OnHit(animatedmesh::RIGHT);
         return true;
       }
@@ -491,7 +500,8 @@ void Scene::OnMouseMove(int mouse_x, int mouse_y, int delta_x, int delta_y) {
 void Scene::OnMouseBtnPress(int mouse_x, int mouse_y, int button, int mods) {
   for (auto ball : balls_) {
     if (!ball->IsMoving()) {
-      ball->StartMoving(platform_->GetCenter(), platform_width_, platform_height_);
+      ball->StartMoving(platform_->GetCenter(), platform_width_,
+                        platform_height_);
       break;
     }
   }
