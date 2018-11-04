@@ -14,7 +14,7 @@ This is a simple **Brick Breaker (Breakout!)** game developed in **C++** using *
 		* [Platform collisions](#platform-collisions)
 		* [Brick collisions](#brick-collisions)
 	* [Power-up movement](#power-up-movement)
-		* [Platform collisions](#platform-collisions)
+		* [Platform collisions](#platform-collisions-1)
 
 ## Project structure
 The game itself is an instance of a `brickbreaker::Scene`, a special type of `SimpleScene`. This scene contains:
@@ -44,9 +44,17 @@ Functions for generating matrices for various animation-related operations (`Tra
 The platform (and the ball, if stuck to the platform) moves horizontally with the movement of the mouse (`OnMouseMove()`), without moving past the lateral walls. The ball is launched from the platform if any of the mouse buttons are pressed (`OnMouseBtnPress()`), and if multiple balls are on the platform at a certain time, only one of them will be launched per click. The game can be paused/unpaused by pressing the <kbd>P</kbd> key (`OnKeyPress()`).
 
 ## Gameplay
-`TODO`
+The player starts with one ball and their purpose is to destroy all the bricks in the scene by hitting them with the ball. If a ball falls and no other balls are left in the scene, the player loses a life. If all three lives are lost, the game starts over.
 ### Power-ups
-`TODO`
+The game can be made easier or harder by catching power-ups/power-downs, which have a chance to spawn whenever a brick is destroyed. A power-up has to touch the platform in order to activate, and most power-ups will automatically de-activate after 10 seconds. The power-up's effects are incremental.
+
+The following power-ups are available:
+* **Platform stretch** - makes the platform larger for easier control of the ball(s)
+* **Platform shrink** - makes the platform smaller
+* **Bottom wall** - a wall appears on the bottom of the scene, preventing balls from falling
+* **Extra ball** -  a new ball can be launched in the game together with the existing ones
+
+In order to determine whether or not to spawn a power-up when a brick is destroyed, and which specific effect that power-up should have, `std::default_random_engine` and `std::bernoulli_distibution` are used.
 
 ## Movement and collisions
 ### Ball movement
@@ -85,6 +93,8 @@ movement_y_ = movement_speed_ * sin(reflect_angle);
                     animatedmesh::Position brick_position)`
 * `bool Scene::CheckCollision(Ball *ball, Brick *brick)`
 * `void Ball::OnHit(animatedmesh::Position obstacle_position)`
+
+When a ball hits a brick, the brick will disappear by gradually shrinking. Therefore, when a brick is hit, its `Update()` function will first translate the brick to the origin, scale it and then translate it back to its place. This is done by gradually multiplying the model matrix with the translation and scale matrices in reverse order.
 
 Depending on the place where the ball collides with the brick, it will reflect in the same way as if hitting a wall. We need multiple conditions in order to determine which direction the ball is reflected in.
 
@@ -126,9 +136,9 @@ if (GetEuclideanDistance(corner_distance) <= ball_radius_)
 
 
 ### Power-up movement
-`TODO`
+When a power-up spawns, it will spawn in the center of the destroyed brick and gradually fall down while rotating around its axis. In order to obtain this animation, the power-up has a rotation `angle_` (that increments gradually) together with the associated `center_`. With every call to `Update()`, the model matrix will be the result of translating the power-up to the origin, rotating it and then translating it to the desired spot.
 #### Platform collisions
-`TODO`
+When a power-up hits the platform, it shrinks and its effect is activated. In addition to the operations above, the power-up is moved again to the origin, scaled and then moved to the desired location.
 
 ***
 *<p align="center">(c) Ioana Alexandru | 334CB</p>*
