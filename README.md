@@ -3,6 +3,19 @@ This is a simple **Brick Breaker (Breakout!)** game developed in **C++** using *
 
 <div style="text-align:center"><img src ="https://image.ibb.co/i9G37f/brickbreaker2.png" /></div>
 
+## Table of contents
+* [Project structure](#project-structure)
+* [Controls](#controls)
+* [Gameplay](#gameplay)
+	* [Power-ups](#power-ups)
+* [Movement and collisions](#movement-and-collisions)
+	* [Ball movement](#ball-movement)
+		* [Wall collisions](#wall-collisions)
+		* [Platform collisions](#platform-collisions)
+		* [Brick collisions](#brick-collisions)
+	* [Power-up movement](#power-up-movement)
+		* [Platform collisions](#platform-collisions)
+
 ## Project structure
 The game itself is an instance of a `brickbreaker::Scene`, a special type of `SimpleScene`. This scene contains:
 * UI elements (they don't affect the actual gameplay)
@@ -61,7 +74,7 @@ Depending on the place where the ball collides with the brick, it will reflect i
 
 ### Power-up movement
 `TODO`
-#### Platform collision
+#### Platform collisions
 `TODO`
 
 ***
