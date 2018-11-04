@@ -14,8 +14,8 @@ const float Scene::kBrickPanelWidthRatio = 0.8f,
             Scene::kWallThicknessRatio = 0.01f,
             Scene::kBrickDistanceRatio = 0.15f,
             Scene::kBallToPlatformRatio = 0.15f,
-            Scene::kPauseButtonSize = 100.0f, Scene::kPowerupSpawnChance = 0.2f,
-            Scene::kPowerupChance = 0.3f, Scene::kPowerupSize = 20.0f,
+            Scene::kPauseButtonSize = 100.0f, Scene::kPowerupSpawnChance = 0.3f,
+            Scene::kPowerupChance = 0.1f, Scene::kPowerupSize = 20.0f,
             Scene::kLifeSize = 30.0f, Scene::kLifeSpaceSize = 10.0f,
             Scene::kSolidBrickChance = 0.8f;
 
@@ -206,7 +206,7 @@ bool Scene::CheckCollision(
 bool Scene::CheckCollision(brickbreaker::Ball *ball, Platform *platform) {
   if (ball->GetCenter().y <
       wall_thickness_ + platform->GetHeight() + ball->GetRadius()) {
-    ball->OnPlatformHit(platform->GetCenter(), platform->GetWidth());
+    ball->OnPlatformHit(platform->GetCenter(), platform->GetWidth(), platform->IsSticky());
     return true;
   }
 
@@ -312,6 +312,9 @@ void Scene::SpawnPowerup(glm::vec3 top_left_corner) {
   } else if (RandomPowerup()) {
     powerup = new Powerup(name, top_left_corner, kPowerupSize, wall_color_);
     effect = std::make_pair(&Scene::AddBottomWall, &Scene::RemoveBottomWall);
+  } else if (RandomPowerup()) {
+    powerup = new Powerup(name, top_left_corner, kPowerupSize, platform_color_);
+    effect = std::make_pair(&Scene::MakePlatformSticky, &Scene::MakePlatformNotSticky);
   } else if (RandomPowerup()) {
     powerup = new Powerup(name, top_left_corner, kPowerupSize, kBlue);
     effect = std::make_pair(&Scene::SpeedUpBalls, &Scene::SpeedDownBalls);
@@ -487,7 +490,7 @@ void Scene::OnMouseMove(int mouse_x, int mouse_y, int delta_x, int delta_y) {
 void Scene::OnMouseBtnPress(int mouse_x, int mouse_y, int button, int mods) {
   for (auto ball : balls_) {
     if (!ball->IsMoving()) {
-      ball->StartMoving();
+      ball->StartMoving(platform_->GetCenter(), platform_width_);
       break;
     }
   }

@@ -131,6 +131,12 @@ class Scene : public SimpleScene {
     for (auto ball : balls_) ball->SpeedDown();
   }
 
+  // Make ball stick to the platform on contact (needs a click for release)
+  inline void MakePlatformSticky() { platform_->MakeSticky(); }
+
+  // Undo sticky platform
+  inline void MakePlatformNotSticky() { platform_->MakeNotSticky(); }
+
   // CONSTANTS
 
   // percentage of scene width reserved for brick panel

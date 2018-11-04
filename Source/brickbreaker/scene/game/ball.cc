@@ -19,9 +19,8 @@ void Ball::Update(float delta_time_seconds) {
   }
 }
 
-void Ball::StartMoving() {
-  is_moving_ = true;
-  movement_y_ = movement_speed_;
+void Ball::StartMoving(glm::vec3 platform_center, float platform_size) {
+  OnPlatformHit(platform_center, platform_size, false);
 }
 
 /*
@@ -49,7 +48,7 @@ void Ball::OnHit(animatedmesh::Position obstacle_position) {
   }
 }
 
-void Ball::OnPlatformHit(glm::vec3 platform_center, float platform_size) {
+void Ball::OnPlatformHit(glm::vec3 platform_center, float platform_size, bool sticky_platform) {
   /*
   Middle of the platform: cosine = 0
   Rightmost corner: cosine = 1
@@ -59,9 +58,18 @@ void Ball::OnPlatformHit(glm::vec3 platform_center, float platform_size) {
   float cosine = (center_.x - platform_center.x) / (platform_size / 2);
   if (cosine < -1 || cosine > 1) return;  // ball doesn't touch the platform
 
+  if (sticky_platform) {
+    is_moving_ = false;
+    return;
+  }
+
+  is_moving_ = true;
+
   float reflect_angle = acos(cosine);
 
   movement_x_ = movement_speed_ * cos(reflect_angle);
   movement_y_ = movement_speed_ * sin(reflect_angle);
+
+  Update(0.1);
 }
 }  // namespace brickbreaker

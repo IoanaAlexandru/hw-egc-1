@@ -17,10 +17,11 @@ class Ball : public animatedmesh::Circle {
   ~Ball();
 
   void Update(float delta_time_seconds);
-  void StartMoving();
+  void StartMoving(glm::vec3 platform_center, float platform_size);
   void Move(float new_position);
   void OnHit(animatedmesh::Position obstacle_position);
-  void OnPlatformHit(glm::vec3 platform_top_left_corner, float platform_size);
+  void OnPlatformHit(glm::vec3 platform_center, float platform_size,
+                     bool sticky_platform);
 
   inline float GetMovementX() { return movement_x_; }
   inline float GetMovementY() { return movement_y_; }

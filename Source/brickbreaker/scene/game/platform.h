@@ -18,10 +18,15 @@ class Platform : public animatedmesh::Rectangle {
   void Update(float delta_time_seconds);
   void Move(float mouse_position);
 
+  inline bool IsSticky() { return is_sticky_; }
+  inline void MakeSticky() { is_sticky_ = true; }
+  inline void MakeNotSticky() { is_sticky_ = false; }
+
   void ShrinkWidth();
   void StretchWidth();
 
   glm::mat3 scale_matrix_ = glm::mat3(1);
+  bool is_sticky_;
 };
 }  // namespace brickbreaker
 
