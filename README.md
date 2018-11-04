@@ -30,6 +30,8 @@ The game itself is an instance of a `brickbreaker::Scene`, a special type of `Si
 
 All of these elements are either regular `Mesh`es or `AnimatedMesh`es. An `AnimatedMesh` is a special type of `Mesh` which is animated, meaning it holds a model matrix which dictates the position/size etc. of the mesh at one specific point in time. When rendering, a regular `Mesh` will use a model matrix that is simply the identity matrix (`glm::mat3(1)`), while an `AnimatedMesh` uses its own model matrix.
 
+In order to keep different elements of the game separate, the project implements a variation of the **Model-View-Controller** design pattern, where the elements listed above are part of the Model, the View is the actual rendering of these elements (done through the `RenderMesh2D()` method call), and the controller is the `brickbreaker::Scene`. Hence, none of the elements listed above know about each other, and the `brickbreaker::Scene` is in charge of managing the interactions between them.
+
 For the purpose of re-using certain shapes for different scene elements (as well as allowing us to easily change the shape of an element), we have several custom `AnimatedMesh`es with special shapes:
 * `animatedmesh::Circle`
 * `animatedmesh::Rectangle`
@@ -52,15 +54,25 @@ Unless stuck to the platform, the balls move continuously through the scene. Eac
 .
 <div style="text-align:center"><img src ="https://image.ibb.co/gbCzF0/ball-movement.jpg" /></div>
 
+Hence, with every call to `Update()`, a new matrix for translation with `movement_x_`, `movement_y_` is multiplied with the ball's model matrix, and the ball's `center` is updated.
+
 #### Wall collisions
+* `bool Scene::CheckCollision(
+      Ball *ball,
+      std::pair<const animatedmesh::Position, brickbreaker::Wall *> wall)`
+* `void Ball::OnHit(animatedmesh::Position obstacle_position)`
+
 When the ball hits a wall, it is reflected normally (at an equal angle). Since the speed doesn't change, this is done by simply inverting the horizontal component if the wall is vertical (`movement_x_ = -movement_x_`) or inverting the vertical component if the wall is horizontal (`movement_y_ = -movement_y`).
 
 <div style="text-align:center"><img src ="https://i.stack.imgur.com/QGuay.png" /></div>
 
 #### Platform collisions
+* `bool Scene::CheckCollision(Ball *ball, Platform *platform)`
+* `void Ball::OnPlatformHit(glm::vec3 platform_center, float platform_size)`
+
 When the ball hits a platform, the angle that the new direction of the ball makes with the platform has a linear increase from left to right based on the collision point: the leftmost corner of the platform would have an angle of 0°, the middle of the platform an angle of 90°, the rightmost corner of the platform an angle of 180° and everything in between.
 
-<div style="text-align:center"><img src ="https://ocw.cs.pub.ro/courses/_media/egc/teme/fig2.png?w=750&tok=1f0928" /></div>
+<div style="text-align:center"><img src ="https://ocw.cs.pub.ro/courses/_media/egc/teme/fig2.png" /></div>
 
 The new movement vector of the ball is calculated by considering the platform the cosine axis of the unit circle (with `cosine = 0` in the middle of the platform, `cosine = 1` at the rightmost corner and `cosine = -1` at the leftmost corner. The reflection angle will then be `acos(cosine)`, and the new movement coordinates will be obtained as:
 ~~~
@@ -69,8 +81,49 @@ movement_y_ = movement_speed_ * sin(reflect_angle);
 ~~~
 
 #### Brick collisions
-Depending on the place where the ball collides with the brick, it will reflect in the same way as if hitting a wall.
-`TODO`
+* `bool Scene::Collide(Ball *ball, Brick *brick,
+                    animatedmesh::Position brick_position)`
+* `bool Scene::CheckCollision(Ball *ball, Brick *brick)`
+* `void Ball::OnHit(animatedmesh::Position obstacle_position)`
+
+Depending on the place where the ball collides with the brick, it will reflect in the same way as if hitting a wall. We need multiple conditions in order to determine which direction the ball is reflected in.
+
+If we consider absolute distances (we are particularly interested in the distance between the center of the brick and the center of the ball), we can limit the number of separate conditions by only working with one quadrant instead of four to determine whether the ball is actually touching the platform (we can then use the quadrant to determine the direction of the reflection).
+
+<div style="text-align:center"><img src ="https://image.ibb.co/iw5o7f/brickbreaker.jpg" /></div>
+
+In the image above, the grey area is the upper-right quadrant of the brick and the red line is the limit of where the center of the ball can be so it intersects with the brick. We can eliminate the green area (where we know for sure that the ball isn't touching the brick) straight away:
+~~~
+if (abs_centers_distance.x > brick_width_ / 2 + ball_radius_) return false;
+if (abs_centers_distance.y > brick_height_ / 2 + ball_radius_) return false;
+~~~
+In the two orange areas the ball is clearly touching the brick, so we just need to determine the direction in which the ball should be reflected by using the sign of the difference between the ball's coordinates and the brick's coordinates.
+~~~
+if (abs_centers_distance.y <= brick_height_ / 2)
+    if (centers_distance.x > 0)
+      // reflect to the right
+    else
+      // reflect to the left
+  if (abs_centers_distance.x <= brick_width_ / 2)
+    if (centers_distance.y > 0)
+      // reflect down
+    else
+      // reflect up
+~~~
+In the white area, the euclidean distance between the center of the ball and the corner of the brick has to be smaller than the radius of the ball. The direction of reflection (up/right in the quadrant displayed above) is determined by whether the center of the ball is over or under the dotted line (which can be determined by using the difference between the x and the y of the difference between the center of the ball and the corner of the brick):
+~~~
+if (GetEuclideanDistance(corner_distance) <= ball_radius_)
+    if (corner_distance.x < corner_distance.y)
+      if (centers_distance.x > 0)
+        // reflect right
+      else
+        // reflect left
+    else if (centers_distance.y > 0)
+      // reflect down
+    else
+      // reflect up
+~~~
+
 
 ### Power-up movement
 `TODO`
