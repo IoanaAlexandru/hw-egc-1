@@ -60,8 +60,11 @@ class Scene : public SimpleScene {
   std::bernoulli_distribution powerup_chance_;
   // chance of power-up to spawn after a brick is destroyed
   std::bernoulli_distribution powerup_spawn_chance_;
+  // chance of a solid brick to be initialised
+  std::bernoulli_distribution solid_brick_chance_;
   inline bool ShouldSpawnPowerup() { return powerup_spawn_chance_(random_); }
   inline bool RandomPowerup() { return powerup_chance_(random_); }
+  inline bool SolidBrick() { return solid_brick_chance_(random_); }
   void SpawnPowerup(glm::vec3 top_left_corner);
 
   // COLLISIONS
@@ -144,6 +147,8 @@ class Scene : public SimpleScene {
   static const float kPowerupSize;
   static const float kLifeSize;
   static const float kLifeSpaceSize;
+  // chance of a brick to be solid
+  static const float kSolidBrickChance;
 
   // SCENE ELEMENTS
 

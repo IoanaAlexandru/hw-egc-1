@@ -4,7 +4,9 @@
 namespace brickbreaker {
 Brick::Brick(std::string name, glm::vec3 top_left_corner, float height,
              float width, glm::vec3 color, bool fill)
-    : Rectangle(name, top_left_corner, height, width, color, fill) {}
+    : Rectangle(name, top_left_corner, height, width, color, fill) {
+  is_solid_ = fill;
+}
 
 Brick::~Brick() {}
 

@@ -16,7 +16,8 @@ const float Scene::kBrickPanelWidthRatio = 0.8f,
             Scene::kBallToPlatformRatio = 0.15f,
             Scene::kPauseButtonSize = 100.0f, Scene::kPowerupSpawnChance = 0.2f,
             Scene::kPowerupChance = 0.3f, Scene::kPowerupSize = 20.0f,
-            Scene::kLifeSize = 30.0f, Scene::kLifeSpaceSize = 10.0f;
+            Scene::kLifeSize = 30.0f, Scene::kLifeSpaceSize = 10.0f,
+            Scene::kSolidBrickChance = 0.8f;
 
 const int Scene::kBricksPerRow = 15, Scene::kBrickRows = 8,
           Scene::kMaxLives = 3;
@@ -84,11 +85,10 @@ void Scene::InitBrickPanel() {
   // Top left corner of first brick at the top left of the brick panel
   glm::vec3 brick_corner = glm::vec3(x_offset, y_offset, 0);
 
-  bool fill = true;
-
   for (auto i = 0; i < kBrickRows; i++) {
     std::vector<Brick *> brick_line;
     for (auto j = 0; j < kBricksPerRow; j++) {
+      bool fill = SolidBrick();
       std::string name = "brick-" + std::to_string(i) + "-" + std::to_string(j);
       brick_line.push_back(new Brick(name, brick_corner, brick_height_,
                                      brick_width_, brick_color_, fill));
@@ -131,6 +131,7 @@ void Scene::Init() {
 
   powerup_spawn_chance_ = std::bernoulli_distribution(kPowerupSpawnChance);
   powerup_chance_ = std::bernoulli_distribution(kPowerupChance);
+  solid_brick_chance_ = std::bernoulli_distribution(kSolidBrickChance);
 
   scene_width_ = (float)resolution.x;
   scene_height_ = (float)resolution.y;

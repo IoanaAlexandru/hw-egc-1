@@ -12,6 +12,7 @@ class Brick : public animatedmesh::Rectangle {
   float kDefaultShrinkingSpeed = 0.8f;
 
   // Create rectangle (brick) with given top left corner, size, color and fill
+  // If brick doesn't have fill, it is not solid (ball can pass through it)
   Brick(std::string name, glm::vec3 top_left_corner, float height, float width,
         glm::vec3 color, bool fill);
   ~Brick();
