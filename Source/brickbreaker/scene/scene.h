@@ -119,6 +119,7 @@ class Scene : public SimpleScene {
     balls_.push_back(new Ball(name, ball_center, ball_radius_, ball_color_));
   }
 
+  // Used as a disable trigger for powerups that don't expire
   inline void DoNothing() {}
 
   // Speed up all balls
@@ -136,6 +137,16 @@ class Scene : public SimpleScene {
 
   // Undo sticky platform
   inline void MakePlatformNotSticky() { platform_->MakeNotSticky(); }
+
+  // Make balls pass through walls
+  inline void PowerUpBalls() {
+    for (auto ball : balls_) ball->PowerUp();
+  }
+
+  // Undo make balls pass through walls
+  inline void PowerDownBalls() {
+    for (auto ball : balls_) ball->PowerDown();
+  }
 
   // CONSTANTS
 

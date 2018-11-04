@@ -27,6 +27,7 @@ class Ball : public animatedmesh::Circle {
   inline float GetMovementX() { return movement_x_; }
   inline float GetMovementY() { return movement_y_; }
   inline bool IsMoving() { return is_moving_; }
+  inline bool IsPoweredUp() { return is_powered_up_; }
 
   inline void SpeedUp() {
     float new_movement_speed = movement_speed_ + kSpeedupStep;
@@ -42,10 +43,14 @@ class Ball : public animatedmesh::Circle {
     movement_speed_ = new_movement_speed;
   }
 
+  inline void PowerUp() { is_powered_up_ = true; }
+  inline void PowerDown() { is_powered_up_ = false; }
+
  private:
   float movement_x_, movement_y_;
   float movement_speed_ = kDefaultSpeed;
   bool is_moving_ = false;
+  bool is_powered_up_ = false;
 };
 }  // namespace brickbreaker
 

@@ -242,7 +242,7 @@ bool Scene::CheckCollision(
 
 bool Scene::Collide(Ball *ball, Brick *brick,
                     animatedmesh::Position brick_position) {
-  bool brick_is_solid = brick->IsSolid();
+  bool brick_is_solid = brick->IsSolid() && !ball->IsPoweredUp();
 
   brick->OnHit();
   if (brick->IsShrinking() && ShouldSpawnPowerup())
@@ -326,6 +326,9 @@ void Scene::SpawnPowerup(glm::vec3 top_left_corner) {
     powerup = new Powerup(name, top_left_corner, kPowerupSize, platform_color_);
     effect = std::make_pair(&Scene::MakePlatformSticky,
                             &Scene::MakePlatformNotSticky);
+  } else if (RandomPowerup()) {
+    powerup = new Powerup(name, top_left_corner, kPowerupSize, kPurple);
+    effect = std::make_pair(&Scene::PowerUpBalls, &Scene::PowerDownBalls);
   } else if (RandomPowerup()) {
     powerup = new Powerup(name, top_left_corner, kPowerupSize, kBlue);
     effect = std::make_pair(&Scene::SpeedUpBalls, &Scene::SlowDownBalls);
