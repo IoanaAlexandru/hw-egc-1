@@ -127,8 +127,8 @@ class Scene : public SimpleScene {
   }
 
   // Speed down all balls
-  inline void SpeedDownBalls() {
-    for (auto ball : balls_) ball->SpeedDown();
+  inline void SlowDownBalls() {
+    for (auto ball : balls_) ball->SlowDown();
   }
 
   // Make ball stick to the platform on contact (needs a click for release)

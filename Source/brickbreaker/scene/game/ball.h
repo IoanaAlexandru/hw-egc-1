@@ -28,7 +28,7 @@ class Ball : public animatedmesh::Circle {
   inline bool IsMoving() { return is_moving_; }
 
   inline void SpeedUp() { movement_speed_ += kSpeedupStep; }
-  inline void SpeedDown() {
+  inline void SlowDown() {
     movement_speed_ -= kSpeedupStep;
     movement_speed_ = std::max(movement_speed_, kMinSpeed);
   }

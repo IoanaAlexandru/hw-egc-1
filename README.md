@@ -53,6 +53,9 @@ The following power-ups are available:
 * **Platform shrink** - makes the platform smaller
 * **Bottom wall** - a wall appears on the bottom of the scene, preventing balls from falling
 * **Extra ball** -  a new ball can be launched in the game together with the existing ones
+* **Sticky platform** - balls stick to the platform and need a click to be launched again
+* **Speed up balls** - all balls currently in the scene are sped up
+* **Slow down balls** - all balls currently in the scene are slowed down
 
 In order to determine whether or not to spawn a power-up when a brick is destroyed, and which specific effect that power-up should have, `std::default_random_engine` and `std::bernoulli_distibution` are used.
 
