@@ -27,6 +27,7 @@ class Scene : public SimpleScene {
 
  private:
   // INHERITED METHODS
+
   void FrameStart() override;
   void Update(float delta_time_seconds) override;
   void FrameEnd() override;
@@ -43,6 +44,7 @@ class Scene : public SimpleScene {
   void OnWindowResize(int width, int height) override;
 
   // INITIALIZATION
+
   void InitPauseButton();
   void InitLives();
   void InitWalls();
@@ -51,44 +53,60 @@ class Scene : public SimpleScene {
   void InitBall();
 
   // RANDOMIZATION
+
+  // randomization engine
   std::default_random_engine random_;
+  // chance of a specific power-up to spawn
   std::bernoulli_distribution powerup_chance_;
+  // chance of power-up to spawn after a brick is destroyed
   std::bernoulli_distribution powerup_spawn_chance_;
   inline bool ShouldSpawnPowerup() { return powerup_spawn_chance_(random_); }
   inline bool RandomPowerup() { return powerup_chance_(random_); }
   void SpawnPowerup(glm::vec3 top_left_corner);
 
   // COLLISIONS
+
+  // Check and act upon collision between ball and wall
   bool CheckCollision(
       Ball *ball,
       std::pair<const animatedmesh::Position, brickbreaker::Wall *> wall);
+  // Check and act upon collision between ball and platform
   bool CheckCollision(Ball *ball, Platform *platform);
+  // Check and act upon collision between power-up and platform
   bool CheckCollision(
       std::pair<Powerup *, std::pair<void (Scene::*)(), void (Scene::*)()>>
           powerup_and_effect,
       Platform *platform);
+  // Act upon collision between power-up and brick based on the position
   bool Collide(Ball *ball, Brick *brick, animatedmesh::Position position);
+  // Check collision between ball and brick
   bool CheckCollision(Ball *ball, Brick *brick);
 
   // POWERUP EFFECTS
+
+  // Make platform width smaller
   inline void ShrinkPlatform() {
     platform_->ShrinkWidth();
     platform_width_ = platform_->GetWidth();
   }
 
+  // Make platform width larger
   inline void StretchPlatform() {
     platform_->StretchWidth();
     platform_width_ = platform_->GetWidth();
   }
 
+  // Create wall at the bottom of the scene
   inline void AddBottomWall() {
     walls_.emplace(animatedmesh::DOWN,
                    new Wall("wall-down", animatedmesh::DOWN, scene_height_,
                             scene_width_, wall_thickness_, wall_color_));
   }
 
+  // Remove wall at the bottom of the scene
   inline void RemoveBottomWall() { walls_.erase(animatedmesh::DOWN); }
 
+  // Create new ball and put it on the platform
   inline void AddBall() {
     glm::vec3 ball_center =
         platform_->GetCenter() +
@@ -101,6 +119,7 @@ class Scene : public SimpleScene {
   inline void DoNothing() {}
 
   // CONSTANTS
+
   // percentage of scene width reserved for brick panel
   static const float kBrickPanelWidthRatio;
   // percentage of scene height reserved for brick panel
@@ -127,6 +146,7 @@ class Scene : public SimpleScene {
   static const float kLifeSpaceSize;
 
   // SCENE ELEMENTS
+
   std::vector<std::vector<Brick *>> bricks_;
   std::map<animatedmesh::Position, Wall *> walls_;
   Platform *platform_;
@@ -140,6 +160,7 @@ class Scene : public SimpleScene {
       powerups_and_effects_;
 
   // ELEMENT PROPERTIES
+
   float scene_width_, scene_height_;
   float wall_thickness_;
   float brick_width_, brick_height_;
@@ -147,9 +168,11 @@ class Scene : public SimpleScene {
   float ball_radius_;
 
   // SCENE PROPERTIES
+
   bool paused_ = false;
 
   // COLORS
+
   glm::vec3 wall_color_ = glm::vec3(0.7, 0.2, 0.2);
   glm::vec3 ball_color_ = kWhite;
   glm::vec3 life_color_ = kRed;

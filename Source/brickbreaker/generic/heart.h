@@ -11,15 +11,10 @@ class Heart : public AnimatedMesh {
   Heart(std::string name, glm::vec3 center, float width, glm::vec3 color);
   ~Heart();
 
-  inline glm::vec3 GetCenter() { return center_; }
   inline float GetWidth() { return width_; }
-  inline glm::vec3 GetColor() { return color_; }
 
  protected:
   float width_;
-  glm::vec3 color_;
-  glm::vec3 center_;
-  glm::vec3 initial_center_;
 };
 }  // namespace animatedmesh
 

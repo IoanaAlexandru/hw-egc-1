@@ -13,16 +13,11 @@ class Rectangle : public AnimatedMesh {
   ~Rectangle();
   inline float GetHeight() { return height_; }
   inline float GetWidth() { return width_; }
-  inline glm::vec3 GetColor() { return color_; }
   inline bool GetFill() { return fill_; }
-  inline glm::vec3 GetCenter() { return center_; }
 
  protected:
   float height_, width_;
-  glm::vec3 color_;
   bool fill_;
-  glm::vec3 center_;
-  glm::vec3 initial_center_;
 };
 }  // namespace animatedmesh
 

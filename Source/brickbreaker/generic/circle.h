@@ -11,15 +11,10 @@ class Circle : public AnimatedMesh {
   Circle(std::string name, glm::vec3 center, float radius, glm::vec3 color);
   ~Circle();
 
-  inline glm::vec3 GetCenter() { return center_; }
   inline float GetRadius() { return radius_; }
-  inline glm::vec3 GetColor() { return color_; }
 
  protected:
   float radius_;
-  glm::vec3 color_;
-  glm::vec3 center_;
-  glm::vec3 initial_center_;
 };
 }  // namespace animatedmesh
 

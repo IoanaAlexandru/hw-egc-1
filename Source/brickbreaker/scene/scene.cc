@@ -237,6 +237,7 @@ bool Scene::Collide(Ball *ball, Brick *brick,
   if (brick->IsShrinking() && ShouldSpawnPowerup())
     SpawnPowerup(brick->GetCenter());
   if (brick_is_solid) {
+    std::cout << brick->GetMeshID() << ": " << brick_position << std::endl;
     ball->OnHit(brick_position);
     return true;
   }
@@ -255,7 +256,7 @@ bool Scene::CheckCollision(Ball *ball, Brick *brick) {
   // distance (x, y) between the center of the ball and  the center of the brick
   glm::vec3 centers_distance = brick_center - ball_center;
   glm::vec3 abs_centers_distance = abs(centers_distance);
-  // distance (x, y) between the center of the ball and the corner of the brick
+  // distance between the center of the ball and the corner of the brick
   glm::vec3 corner_distance =
       glm::vec3(abs_centers_distance.x - brick_width_ / 2,
                 abs_centers_distance.y - brick_height_ / 2, 0);
