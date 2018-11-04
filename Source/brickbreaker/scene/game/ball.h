@@ -28,10 +28,18 @@ class Ball : public animatedmesh::Circle {
   inline float GetMovementY() { return movement_y_; }
   inline bool IsMoving() { return is_moving_; }
 
-  inline void SpeedUp() { movement_speed_ += kSpeedupStep; }
+  inline void SpeedUp() {
+    float new_movement_speed = movement_speed_ + kSpeedupStep;
+    movement_x_ = movement_x_ * new_movement_speed / movement_speed_;
+    movement_y_ = movement_y_ * new_movement_speed / movement_speed_;
+    movement_speed_ = new_movement_speed;
+  }
   inline void SlowDown() {
-    movement_speed_ -= kSpeedupStep;
-    movement_speed_ = std::max(movement_speed_, kMinSpeed);
+    float new_movement_speed =
+        std::max(movement_speed_ - kSpeedupStep, kMinSpeed);
+    movement_x_ = movement_x_ * new_movement_speed / movement_speed_;
+    movement_y_ = movement_y_ * new_movement_speed / movement_speed_;
+    movement_speed_ = new_movement_speed;
   }
 
  private:
