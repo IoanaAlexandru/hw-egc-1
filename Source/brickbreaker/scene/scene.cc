@@ -229,57 +229,68 @@ bool Scene::CheckCollision(
   return false;
 }
 
-bool Scene::CheckCollision(Ball *ball, Brick *brick) {
-  glm::vec3 ball_center = ball->GetCenter();
-  float ball_radius = ball->GetRadius();
-
-  glm::vec3 brick_center = brick->GetCenter();
-  float up = brick_center.y + brick_height_ / 2,
-        down = brick_center.y - brick_height_ / 2,
-        left = brick_center.x - brick_width_ / 2,
-        right = brick_center.x + brick_width_ / 2;
-  glm::vec3 centers_difference = brick_center - ball_center;
+bool Scene::Collide(Ball *ball, Brick *brick,
+                    animatedmesh::Position brick_position) {
   bool brick_is_solid = brick->IsSolid();
 
-  if (abs(centers_difference.y) < brick_height_ / 2 + ball_radius &&
-      ball_center.x > left && ball_center.x < right) {
-    if (centers_difference.y > 0) {
-      brick->OnHit();
-      if (brick->IsShrinking() && ShouldSpawnPowerup())
-        SpawnPowerup(brick->GetCenter());
-      if (brick_is_solid) {
-        ball->OnHit(animatedmesh::UP);
-        return true;
-      }
-    } else {
-      brick->OnHit();
-      if (brick->IsShrinking() && ShouldSpawnPowerup())
-        SpawnPowerup(brick->GetCenter());
-      if (brick_is_solid) {
-        ball->OnHit(animatedmesh::DOWN);
-        return true;
-      }
-    }
-  } else if (abs(centers_difference.x) < brick_width_ / 2 + ball_radius &&
-             ball_center.y < up && ball_center.y > down) {
-    if (centers_difference.x > 0) {
-      brick->OnHit();
-      if (brick->IsShrinking() && ShouldSpawnPowerup())
-        SpawnPowerup(brick->GetCenter());
-      if (brick_is_solid) {
-        ball->OnHit(animatedmesh::LEFT);
-        return true;
-      }
-    } else {
-      brick->OnHit();
-      if (brick->IsShrinking() && ShouldSpawnPowerup())
-        SpawnPowerup(brick->GetCenter());
-      if (brick_is_solid) {
-        ball->OnHit(animatedmesh::RIGHT);
-        return true;
-      }
-    }
+  brick->OnHit();
+  if (brick->IsShrinking() && ShouldSpawnPowerup())
+    SpawnPowerup(brick->GetCenter());
+  if (brick_is_solid) {
+    ball->OnHit(brick_position);
+    return true;
   }
+
+  return false;
+}
+
+float GetEuclideanDistance(glm::vec3 distance) {
+  return sqrt(pow(distance.x, 2) + pow(distance.y, 2));
+}
+
+bool Scene::CheckCollision(Ball *ball, Brick *brick) {
+  glm::vec3 ball_center = ball->GetCenter();
+
+  glm::vec3 brick_center = brick->GetCenter();
+  // distance (x, y) between the center of the ball and  the center of the brick
+  glm::vec3 centers_distance = brick_center - ball_center;
+  glm::vec3 abs_centers_distance = abs(centers_distance);
+  // distance (x, y) between the center of the ball and the corner of the brick
+  glm::vec3 corner_distance =
+      glm::vec3(abs_centers_distance.x - brick_width_ / 2,
+                abs_centers_distance.y - brick_height_ / 2, 0);
+
+  // eliminate cases when the ball is too far to be touching the brick
+  if (abs_centers_distance.x > brick_width_ / 2 + ball_radius_) return false;
+  if (abs_centers_distance.y > brick_height_ / 2 + ball_radius_) return false;
+
+  // straight collisions
+  if (abs_centers_distance.y <= brick_height_ / 2)
+    if (centers_distance.x > 0) {
+      if (Collide(ball, brick, animatedmesh::LEFT)) return true;
+    } else {
+      if (Collide(ball, brick, animatedmesh::RIGHT)) return true;
+    }
+  if (abs_centers_distance.x <= brick_width_ / 2)
+    if (centers_distance.y > 0) {
+      if (Collide(ball, brick, animatedmesh::UP)) return true;
+    } else {
+      if (Collide(ball, brick, animatedmesh::DOWN)) return true;
+    }
+
+  // corner collisions
+  if (GetEuclideanDistance(corner_distance) <= ball_radius_)
+    if (corner_distance.x < corner_distance.y)
+      if (centers_distance.x > 0) {
+        if (Collide(ball, brick, animatedmesh::LEFT)) return true;
+      } else {
+        if (Collide(ball, brick, animatedmesh::RIGHT)) return true;
+      }
+    else if (centers_distance.y > 0) {
+      if (Collide(ball, brick, animatedmesh::UP)) return true;
+    } else {
+      if (Collide(ball, brick, animatedmesh::DOWN)) return true;
+    }
 
   return false;
 }
@@ -371,10 +382,18 @@ void Scene::Update(float delta_time_seconds) {
 
   // Check ball collisions
   for (auto ball : balls_) {
+    // Ball can only collide with one thing in one frame (to avoid conflicts)
+    bool already_collided = false;
+
     // Wall collisions
     for (auto wall : walls_) {
-      if (CheckCollision(ball, wall)) continue;
+      if (CheckCollision(ball, wall)) {
+        already_collided = true;
+        break;
+      }
     }
+
+    if (already_collided) continue;
 
     // Platform collisions
     if (CheckCollision(ball, platform_)) continue;
@@ -384,10 +403,14 @@ void Scene::Update(float delta_time_seconds) {
     for (auto brick_line : bricks_) {
       for (auto brick : brick_line) {
         if (!brick->IsShrinking()) {
-          if (CheckCollision(ball, brick)) continue;
           remaining_bricks++;
+          if (CheckCollision(ball, brick)) {
+            already_collided = true;
+            break;
+          }
         }
       }
+      if (already_collided) break;
     }
 
     // Reset brick panel if no more bricks are left

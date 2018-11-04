@@ -67,6 +67,7 @@ class Scene : public SimpleScene {
       std::pair<Powerup *, std::pair<void (Scene::*)(), void (Scene::*)()>>
           powerup_and_effect,
       Platform *platform);
+  bool Collide(Ball *ball, Brick *brick, animatedmesh::Position position);
   bool CheckCollision(Ball *ball, Brick *brick);
 
   // POWERUP EFFECTS
