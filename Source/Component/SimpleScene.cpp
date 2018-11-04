@@ -42,9 +42,6 @@ void SimpleScene::InitResources()
 
 	SceneInput *SI = new SceneInput(this);
 
-	xozPlane = new Mesh("plane");
-	xozPlane->LoadMesh(RESOURCE_PATH::MODELS + "Primitives", "plane50.obj");
-
 	{
 		vector<VertexFormat> vertices =
 		{

@@ -237,7 +237,6 @@ bool Scene::Collide(Ball *ball, Brick *brick,
   if (brick->IsShrinking() && ShouldSpawnPowerup())
     SpawnPowerup(brick->GetCenter());
   if (brick_is_solid) {
-    std::cout << brick->GetMeshID() << ": " << brick_position << std::endl;
     ball->OnHit(brick_position);
     return true;
   }
