@@ -14,13 +14,15 @@ Ball::~Ball() {}
 
 void Ball::Update(float delta_time_seconds) {
   if (is_moving_) {
-    model_matrix_ *= animatedmesh::Translate(movement_x_, movement_y_);
-    center_ += glm::vec3(movement_x_, movement_y_, 0);
+    model_matrix_ = animatedmesh::Translate(center_.x - initial_center_.x,
+                                            center_.y - initial_center_.y);
+    center_ += glm::vec3(movement_x_ * delta_time_seconds,
+                         movement_y_ * delta_time_seconds, 0);
   }
 }
 
-void Ball::StartMoving(glm::vec3 platform_center, float platform_size) {
-  OnPlatformHit(platform_center, platform_size, false);
+void Ball::StartMoving(glm::vec3 platform_center, float platform_width, float platform_height) {
+  OnPlatformHit(platform_center, platform_width, platform_height, false);
 }
 
 /*
@@ -48,14 +50,15 @@ void Ball::OnHit(animatedmesh::Position obstacle_position) {
   }
 }
 
-void Ball::OnPlatformHit(glm::vec3 platform_center, float platform_size, bool sticky_platform) {
+void Ball::OnPlatformHit(glm::vec3 platform_center, float platform_width,
+                         float platform_height, bool sticky_platform) {
   /*
   Middle of the platform: cosine = 0
   Rightmost corner: cosine = 1
   Leftmost corner: cosine = -1
   Anything in between: calculated linear value
   */
-  float cosine = (center_.x - platform_center.x) / (platform_size / 2);
+  float cosine = (center_.x - platform_center.x) / (platform_width / 2);
   if (cosine < -1 || cosine > 1) return;  // ball doesn't touch the platform
 
   if (sticky_platform) {
@@ -69,5 +72,10 @@ void Ball::OnPlatformHit(glm::vec3 platform_center, float platform_size, bool st
 
   movement_x_ = movement_speed_ * cos(reflect_angle);
   movement_y_ = movement_speed_ * sin(reflect_angle);
+
+  // Make sure the ball didn't end up below the platform
+  center_.y =
+      std::max(platform_center.y + platform_height + radius_ + 0.1f, center_.y);
+  Update(0);
 }
 }  // namespace brickbreaker

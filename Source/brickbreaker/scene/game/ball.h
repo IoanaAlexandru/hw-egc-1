@@ -8,20 +8,21 @@ namespace brickbreaker {
 class Ball : public animatedmesh::Circle {
  public:
   // Default speed of ball
-  float kDefaultSpeed = 8;
-  float kSpeedupStep = 4;
-  float kMinSpeed = 4;
+  float kDefaultSpeed = 400;
+  float kSpeedupStep = 200;
+  float kMinSpeed = 200;
 
   // Create circle (ball) with given center, radius and color
   Ball(std::string name, glm::vec3 center, float radius, glm::vec3 color);
   ~Ball();
 
   void Update(float delta_time_seconds);
-  void StartMoving(glm::vec3 platform_center, float platform_size);
+  void StartMoving(glm::vec3 platform_center, float platform_width,
+                   float platform_height);
   void Move(float new_position);
   void OnHit(animatedmesh::Position obstacle_position);
-  void OnPlatformHit(glm::vec3 platform_center, float platform_size,
-                     bool sticky_platform);
+  void OnPlatformHit(glm::vec3 platform_center, float platform_width,
+                     float platform_height, bool sticky_platform);
 
   inline float GetMovementX() { return movement_x_; }
   inline float GetMovementY() { return movement_y_; }

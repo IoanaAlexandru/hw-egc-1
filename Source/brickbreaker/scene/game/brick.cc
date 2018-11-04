@@ -14,7 +14,8 @@ void Brick::Update(float delta_time_seconds) {
   if (is_shrinking_) {
     model_matrix_ *=
         animatedmesh::Translate(initial_center_.x, initial_center_.y);
-    model_matrix_ *= animatedmesh::Scale(shrinking_speed_, shrinking_speed_);
+    model_matrix_ *= animatedmesh::Scale(shrinking_speed_ * delta_time_seconds,
+                                         shrinking_speed_ * delta_time_seconds);
     model_matrix_ *=
         animatedmesh::Translate(-initial_center_.x, -initial_center_.y);
   }

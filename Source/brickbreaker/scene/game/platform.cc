@@ -9,12 +9,7 @@ Platform::Platform(std::string name, glm::vec3 top_left_corner, float height,
 
 Platform::~Platform() {}
 
-void Platform::Update(float delta_time_seconds) {
-  model_matrix_ = animatedmesh::Translate(center_.x, center_.y);
-  model_matrix_ *= scale_matrix_;
-  model_matrix_ *=
-      animatedmesh::Translate(-initial_center_.x, -initial_center_.y);
-}
+void Platform::Update(float delta_time_seconds) {}
 
 /*
 Move platform center with new_position. (Platform only moves horizontally)

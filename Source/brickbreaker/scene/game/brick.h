@@ -7,9 +7,9 @@
 namespace brickbreaker {
 class Brick : public animatedmesh::Rectangle {
  public:
-  // Default shrinking speed: number between 0 and 1, where a higher value
-  // represents a slower shrinking speed (0 is instant, 1 doesn't shrink)
-  float kDefaultShrinkingSpeed = 0.8f;
+  // Default shrinking speed: number between 0 and 50, where a higher value
+  // represents a slower shrinking speed
+  float kDefaultShrinkingSpeed = 50.0f;
 
   // Create rectangle (brick) with given top left corner, size, color and fill
   // If brick doesn't have fill, it is not solid (ball can pass through it)

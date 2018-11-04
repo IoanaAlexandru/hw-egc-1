@@ -8,12 +8,12 @@ namespace brickbreaker {
 class Powerup : public animatedmesh::Star {
  public:
   // Default falling speed of powerup
-  float kDefaultFallSpeed = 4.0f;
-  // Default rotation speed (in radians)
-  float kDefaultRotationSpeed = 0.02f;
-  // Default shrinking speed: number between 0 and 1, where a higher value
-  // represents a slower shrinking speed (0 is instant, 1 doesn't shrink)
-  float kDefaultShrinkingSpeed = 0.8f;
+  float kDefaultFallSpeed = 200.0f;
+  // Default rotation speed
+  float kDefaultRotationSpeed = 3.0f;
+  // Default shrinking speed: number between 0 and 50, where a higher value
+  // represents a slower shrinking speed
+  float kDefaultShrinkingSpeed = 50.0f;
   // Default lifespan of powerup, in seconds
   float kDefaultLifespan = 10.0f;
 

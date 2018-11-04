@@ -206,7 +206,8 @@ bool Scene::CheckCollision(
 bool Scene::CheckCollision(brickbreaker::Ball *ball, Platform *platform) {
   if (ball->GetCenter().y <
       wall_thickness_ + platform->GetHeight() + ball->GetRadius()) {
-    ball->OnPlatformHit(platform->GetCenter(), platform->GetWidth(), platform->IsSticky());
+    ball->OnPlatformHit(platform->GetCenter(), platform->GetWidth(),
+                        platform->GetHeight(), platform->IsSticky());
     return true;
   }
 
@@ -314,7 +315,8 @@ void Scene::SpawnPowerup(glm::vec3 top_left_corner) {
     effect = std::make_pair(&Scene::AddBottomWall, &Scene::RemoveBottomWall);
   } else if (RandomPowerup()) {
     powerup = new Powerup(name, top_left_corner, kPowerupSize, platform_color_);
-    effect = std::make_pair(&Scene::MakePlatformSticky, &Scene::MakePlatformNotSticky);
+    effect = std::make_pair(&Scene::MakePlatformSticky,
+                            &Scene::MakePlatformNotSticky);
   } else if (RandomPowerup()) {
     powerup = new Powerup(name, top_left_corner, kPowerupSize, kBlue);
     effect = std::make_pair(&Scene::SpeedUpBalls, &Scene::SlowDownBalls);
@@ -383,8 +385,7 @@ void Scene::Update(float delta_time_seconds) {
     auto powerup = (*p).first;
     auto deactivate = (*p).second.second;
 
-    if (powerup->GetCenter().y < 0 &&
-        !powerup->IsActivated()) {
+    if (powerup->GetCenter().y < 0 && !powerup->IsActivated()) {
       // powerup fell
       p = powerups_and_effects_.erase(p);
     } else if (powerup->IsActivated() && !powerup->IsActive()) {
@@ -490,7 +491,7 @@ void Scene::OnMouseMove(int mouse_x, int mouse_y, int delta_x, int delta_y) {
 void Scene::OnMouseBtnPress(int mouse_x, int mouse_y, int button, int mods) {
   for (auto ball : balls_) {
     if (!ball->IsMoving()) {
-      ball->StartMoving(platform_->GetCenter(), platform_width_);
+      ball->StartMoving(platform_->GetCenter(), platform_width_, platform_height_);
       break;
     }
   }

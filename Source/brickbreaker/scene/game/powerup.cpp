@@ -16,12 +16,13 @@ void Powerup::Update(float delta_time_seconds) {
     lifespan_ -= delta_time_seconds;
     model_matrix_ *=
         animatedmesh::Translate(initial_center_.x, initial_center_.y);
-    model_matrix_ *= animatedmesh::Scale(shrinking_speed_, shrinking_speed_);
+    model_matrix_ *= animatedmesh::Scale(shrinking_speed_ * delta_time_seconds,
+                                         shrinking_speed_ * delta_time_seconds);
     model_matrix_ *=
         animatedmesh::Translate(-initial_center_.x, -initial_center_.y);
   } else {
-    center_ += glm::vec3(0, -fall_speed_, 0);
-    angle_ += rotation_speed_;
+    center_ += glm::vec3(0, -fall_speed_ * delta_time_seconds, 0);
+    angle_ += rotation_speed_ * delta_time_seconds;
     model_matrix_ = animatedmesh::Translate(center_.x, center_.y);
     model_matrix_ *= animatedmesh::Rotate(angle_);
     model_matrix_ *=
