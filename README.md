@@ -7,7 +7,7 @@ This is a simple **Brick Breaker (Breakout!)** game developed in **C++** using *
 * [Project structure](#project-structure)
 * [Controls](#controls)
 * [Gameplay](#gameplay)
-  * [Special bricks](#special-bricks)
+	* [Special bricks](#special-bricks)
 	* [Power-ups](#power-ups)
 * [Movement and collisions](#movement-and-collisions)
 	* [Ball movement](#ball-movement)
