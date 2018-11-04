@@ -15,7 +15,7 @@ const float Scene::kBrickPanelWidthRatio = 0.8f,
             Scene::kBrickDistanceRatio = 0.15f,
             Scene::kBallToPlatformRatio = 0.15f,
             Scene::kPauseButtonSize = 100.0f, Scene::kPowerupSpawnChance = 0.3f,
-            Scene::kPowerupChance = 0.1f, Scene::kPowerupSize = 20.0f,
+            Scene::kPowerupChance = 0.2f, Scene::kPowerupSize = 20.0f,
             Scene::kLifeSize = 30.0f, Scene::kLifeSpaceSize = 10.0f,
             Scene::kSolidBrickChance = 0.8f;
 
@@ -370,7 +370,7 @@ void Scene::Update(float delta_time_seconds) {
     auto powerup = (*p).first;
     auto deactivate = (*p).second.second;
 
-    if (powerup->GetCenter().y < wall_thickness_ + platform_height_ &&
+    if (powerup->GetCenter().y < 0 &&
         !powerup->IsActivated()) {
       // powerup fell
       p = powerups_and_effects_.erase(p);

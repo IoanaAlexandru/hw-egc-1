@@ -19,13 +19,14 @@ void Powerup::Update(float delta_time_seconds) {
     model_matrix_ *= animatedmesh::Scale(shrinking_speed_, shrinking_speed_);
     model_matrix_ *=
         animatedmesh::Translate(-initial_center_.x, -initial_center_.y);
+  } else {
+    center_ += glm::vec3(0, -fall_speed_, 0);
+    angle_ += rotation_speed_;
+    model_matrix_ = animatedmesh::Translate(center_.x, center_.y);
+    model_matrix_ *= animatedmesh::Rotate(angle_);
+    model_matrix_ *=
+        animatedmesh::Translate(-initial_center_.x, -initial_center_.y);
   }
-  center_ += glm::vec3(0, -fall_speed_, 0);
-  angle_ += rotation_speed_;
-  model_matrix_ = animatedmesh::Translate(center_.x, center_.y);
-  model_matrix_ *= animatedmesh::Rotate(angle_);
-  model_matrix_ *=
-      animatedmesh::Translate(-initial_center_.x, -initial_center_.y);
 }
 
 void Powerup::OnPlatformHit(glm::vec3 platform_center, float platform_size) {
