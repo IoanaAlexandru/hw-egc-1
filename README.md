@@ -7,6 +7,7 @@ This is a simple **Brick Breaker (Breakout!)** game developed in **C++** using *
 * [Project structure](#project-structure)
 * [Controls](#controls)
 * [Gameplay](#gameplay)
+  * [Special bricks](#special-bricks)
 	* [Power-ups](#power-ups)
 * [Movement and collisions](#movement-and-collisions)
 	* [Ball movement](#ball-movement)
@@ -45,19 +46,22 @@ The platform (and the ball, if stuck to the platform) moves horizontally with th
 
 ## Gameplay
 The player starts with one ball and their purpose is to destroy all the bricks in the scene by hitting them with the ball. If a ball falls and no other balls are left in the scene, the player loses a life. If all three lives are lost, the game starts over.
+### Special bricks
+Certain bricks have just a border (no fill), which is an indicator that the ball can pass through them rather than being reflected.
 ### Power-ups
 The game can be made easier or harder by catching power-ups/power-downs, which have a chance to spawn whenever a brick is destroyed. A power-up has to touch the platform in order to activate, and most power-ups will automatically de-activate after 10 seconds. The power-up's effects are incremental.
 
-The following power-ups are available:
-* **Platform stretch** - makes the platform larger for easier control of the ball(s)
-* **Platform shrink** - makes the platform smaller
-* **Bottom wall** - a wall appears on the bottom of the scene, preventing balls from falling
-* **Extra ball** -  a new ball can be launched in the game together with the existing ones
-* **Sticky platform** - balls stick to the platform and need a click to be launched again
-* **Speed up balls** - all balls currently in the scene are sped up
-* **Slow down balls** - all balls currently in the scene are slowed down
+The following power-ups are available, each of which has a different color:
+* **Platform stretch** (*green*) - makes the platform larger for easier control of the ball(s)
+* **Platform shrink** (*red*) - makes the platform smaller
+* **Bottom wall** (*wall colour*) - a wall appears on the bottom of the scene, preventing balls from falling
+* **Extra ball** (*ball colour*) -  a new ball can be launched in the game together with the existing ones
+* **Sticky platform** (*platform colour*) - balls stick to the platform and need a click to be launched again
+* **Speed up balls** (*blue*) - all balls currently in the scene are sped up
+* **Slow down balls** (*yellow*) - all balls currently in the scene are slowed down
+* **Power up balls** (*purple*) - all balls currently in the scene can pass through bricks
 
-In order to determine whether or not to spawn a power-up when a brick is destroyed, and which specific effect that power-up should have, `std::default_random_engine` and `std::bernoulli_distibution` are used.
+In order to determine whether or not to spawn a power-up when a brick is destroyed, which specific effect that power-up should have, and whether a brick should be solid or not, `std::default_random_engine` and `std::bernoulli_distibution` are used.
 
 ## Movement and collisions
 ### Ball movement
